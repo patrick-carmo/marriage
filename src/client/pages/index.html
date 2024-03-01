@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recorder</title>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+
+<body>
+    <main class="centerFlex">
+        <h1>Recorder</h1>
+        <form id="uploadForm" class="centerFlex">
+            <label for="data" id="labelData">Start Recorder</label>
+            <input type="file" name="data" id="data" accept="video/*," capture>
+            <progress id="progressBar" value="0" max="100"></progress>
+            <input type="reset" value="Reset" class="hiddenBtn" id="reset">
+            <input type="submit" value="Send" class="hiddenBtn" id="send">
+            <input type="button" value="Cancel" class="hiddenBtn" id="cancel">
+        </form>
+        <p id="message"></p>
+    </main>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="../scripts/videoRecorder.js"></script>
+</body>
+
+</html>
