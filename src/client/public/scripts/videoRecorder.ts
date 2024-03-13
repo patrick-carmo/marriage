@@ -16,21 +16,9 @@ const labelText = labelFile.textContent
 
 let controller: AbortController = new AbortController()
 
-const changeStateBtns = (stateOrId: boolean | null | string) => {
+const changeStateBtns = (state: boolean) => {
   formBtns.forEach(btn => {
-    if (stateOrId === true) {
-      btn.style.display = 'block'
-      return
-    }
-    if (stateOrId === false) {
-      btn.style.display = 'none'
-      return
-    }
-    if (btn.id === stateOrId) return
-
-    const computedStyle = window.getComputedStyle(btn)
-    const actualState = computedStyle.getPropertyValue('display')
-    btn.style.display = actualState === 'none' ? 'block' : 'none'
+    btn.style.display = state ? 'block' : 'none'
   })
 }
 
@@ -59,8 +47,8 @@ const sendForm = async () => {
     return
   }
 
+  changeStateBtns(false)
   cancelBtn.style.display = 'block'
-  changeStateBtns('cancel')
 
   const formData = new FormData(form)
 
@@ -104,10 +92,12 @@ const abortRecording = () => {
 }
 
 file?.addEventListener('change', () => {
-  if (file.value !== '' && file.files !== null) {
+  changeStateBtns(true)
+  cancelBtn.style.display = 'none'
+
+  if (file.files !== null) {
     const fileName = file.files[0].name
     labelFile.textContent = fileName
-    changeStateBtns('cancel')
   }
 })
 
