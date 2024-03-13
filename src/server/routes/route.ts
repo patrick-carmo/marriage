@@ -1,20 +1,19 @@
 import { Router } from 'express'
+import { Response } from 'express'
+
 import path from 'path'
-import { multerVideo } from '../utils/multer'
+import { multerVideo } from '../middlewares/multer'
+import limiterRate from '../middlewares/rateLimiter'
 import { uploadVideo } from '../controllers/upload'
 import validateRequest from '../middlewares/validateRequest'
 import videoSchema from '../schemas/videoSchema'
 
 const route: Router = Router()
 
-route.get('/', (req: any, res: any) => {
+route.get('/', (_, res: Response) => {
   res.sendFile(path.join(__dirname, '../../client/pages/index.html'))
 })
 
-route.get('/teste', (req: any, res: any) => {
-  res.sendFile(path.join(__dirname, '../../client/pages/teste.html'))
-})
-
-route.post('/upload', multerVideo, validateRequest(videoSchema), uploadVideo)
+route.post('/upload', limiterRate, multerVideo('data'), validateRequest(videoSchema), uploadVideo)
 
 export default route

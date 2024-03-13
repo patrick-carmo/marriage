@@ -31,19 +31,10 @@ const resetAll = () => {
   controller.abort()
 }
 
-let tmpMessage: NodeJS.Timeout
-
-const displayTmpMessage = (msg: string, time: number) => {
-  message.style.display = 'block'
-  message.textContent = msg
-  tmpMessage = setTimeout(() => {
-    message.style.display = 'none'
-  }, time)
-}
-
 const sendForm = async () => {
   if (file.value === '') {
-    displayTmpMessage('Please select a file', 5000)
+    message.style.display = 'block'
+    message.textContent = 'Select a file to send'
     return
   }
 
@@ -68,6 +59,9 @@ const sendForm = async () => {
 
     if (!response.ok) {
       message.textContent = data.message
+
+      changeStateBtns(true)
+      cancelBtn.style.display = 'none'
       return
     }
 
@@ -76,29 +70,35 @@ const sendForm = async () => {
     resetAll()
     message.innerHTML = `The video was uploaded successfully: <a href="${data.video_link}" target="_blank">Link</a>`
   } catch (error: any) {
+    message.style.display = 'block'
+
     if (error.name === 'AbortError') {
-      displayTmpMessage('Upload canceled', 5000)
+      message.textContent = 'Request aborted'
       return
     }
-    displayTmpMessage(error.message, 5000)
+
+    message.textContent = error.message
   }
 }
 
 const abortRecording = () => {
   controller.abort()
+  changeStateBtns(true)
   cancelBtn.style.display = 'none'
-  resetBtn.style.display = 'block'
-  sendBtn.style.display = 'block'
 }
 
 file?.addEventListener('change', () => {
+  const data = file.files
+  if(!data?.length){
+    resetAll()
+    message.style.display = 'none'
+    return
+  }
+
   changeStateBtns(true)
   cancelBtn.style.display = 'none'
 
-  if (file.files !== null) {
-    const fileName = file.files[0].name
-    labelFile.textContent = fileName
-  }
+  labelFile.textContent = data[0].name
 })
 
 resetBtn?.addEventListener('click', () => {
@@ -106,11 +106,13 @@ resetBtn?.addEventListener('click', () => {
   message.style.display = 'none'
 })
 
-form?.addEventListener('submit', e => {
+form?.addEventListener('submit', (e: Event) => {
   e.preventDefault()
   sendForm()
 })
 
-cancelBtn?.addEventListener('click', () => {
+cancelBtn?.addEventListener('click', (e: Event) => {
+  e.preventDefault()
   abortRecording()
+  console.log('cancelado')
 })
