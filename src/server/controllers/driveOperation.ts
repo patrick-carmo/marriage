@@ -8,14 +8,6 @@ const redisClient = redis.createClient({
 
 redisClient.connect()
 
-redisClient.on('error', error => {
-  console.error('Erro ao conectar ao servidor Redis', error)
-})
-
-redisClient.on('connect', () => {
-  console.log('Conectado ao servidor Redis')
-})
-
 const uploadVideo = async (req: Request, res: Response) => {
   try {
     const file = req.file!
@@ -39,24 +31,29 @@ const deleteVideo = async (req: Request, res: Response) => {
 }
 
 const progressPost = async (req: Request, res: Response) => {
-  const { progress } = req.body
+  const { progress } = req.body as { progress: number }
 
   try {
-    await redisClient.set('progress', progress.toString())
+    await redisClient.set('progress', progress)
     res.status(200).send()
-  } catch (error) {
-    console.error('Erro ao definir o progresso do upload:', error)
-    res.status(500).send()
+  } catch {
+    res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 
 const progressGet = async (_: Request, res: Response) => {
   try {
-    const progress = await redisClient.get('progress')
-    res.status(200).json({ progress: parseInt(progress || '0') })
-  } catch (error) {
-    console.error('Erro ao obter o progresso do upload:', error)
-    res.status(500).send()
+    const progressRedis = await redisClient.get('progress')
+    const progress = Number(progressRedis)
+    
+    if (progress >= 99) {
+      await redisClient.del('progress')
+      return res.status(200).json({ progress: 100 })
+    }
+
+    res.status(200).json({ progress })
+  } catch {
+    res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 

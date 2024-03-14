@@ -1,4 +1,4 @@
-import { Router, request } from 'express'
+import { Router } from 'express'
 import { Response } from 'express'
 
 import path from 'path'
@@ -18,7 +18,6 @@ route.post('/progress', progressPost)
 route.get('/progress', progressGet)
 
 route.post('/upload', multerVideo('data'), validateRequest(videoSchema), uploadVideo)
-
 route.delete('/delete/:id', validateRequest(paramsSchema), deleteVideo)
 
 export default route

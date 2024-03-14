@@ -32,6 +32,11 @@ const updateProgressBar = async () => {
     }
 
     const data = await response.json()
+    if (data.progress > 0 && data.progress < 100) {
+      message.style.display = 'block'
+      message.textContent = `Uploading... ${data.progress}%`
+      console.log(`Progress: ${data.progress}%`)
+    }
     progressBar.value = data.progress
   } catch (error) {
     console.error('Error updating progress bar:', error)
@@ -44,10 +49,14 @@ const resetAll = () => {
   file.value = ''
   if (mediaRecorder) mediaRecorder.stop()
   if (url) URL.revokeObjectURL(url)
+  if (progressInterval) clearInterval(progressInterval)
+  progressBar.style.display = 'none'
+  progressBar.value = 0
 }
 
 const sendForm = async () => {
   progressBar.style.display = 'block'
+
   if (file.value === '') {
     message.style.display = 'block'
     message.textContent = 'Select a file to send'
@@ -60,7 +69,7 @@ const sendForm = async () => {
   const formData = new FormData(form)
 
   message.style.display = 'block'
-  message.textContent = 'Sending...'
+  message.textContent = 'Starting the upload...'
 
   try {
     const response = await fetch('/upload', {
@@ -83,24 +92,14 @@ const sendForm = async () => {
     resetAll()
     message.innerHTML = `The video was uploaded successfully: <a href="${data.video_link}" target="_blank">Link</a>`
   } catch (error: any) {
+    resetAll()
     message.style.display = 'block'
-
-    if (error.name === 'AbortError') {
-      message.textContent = 'Request aborted'
-      return
-    }
-
     message.textContent = error.message
   } finally {
     clearInterval(progressInterval)
     progressBar.style.display = 'none'
     progressBar.value = 0
   }
-}
-
-const abortRecording = () => {
-  changeStateBtns(true)
-  cancelBtn.style.display = 'none'
 }
 
 file?.addEventListener('change', () => {
@@ -124,12 +123,7 @@ resetBtn?.addEventListener('click', () => {
 
 form?.addEventListener('submit', e => {
   e.preventDefault()
-  progressInterval = setInterval(updateProgressBar, 500)
+  progressInterval = setInterval(updateProgressBar, 1000)
   progressBar.style.display = 'block'
   sendForm()
-})
-
-cancelBtn?.addEventListener('click', async e => {
-  e.preventDefault()
-  abortRecording()
 })
