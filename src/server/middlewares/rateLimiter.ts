@@ -1,13 +1,11 @@
-import { Request, Response, NextFunction } from 'express'
-import limiter from '../utils/limiterConfig'
+import rateLimit from 'express-rate-limit'
 
-const rateLimiter = (req: Request, res: Response, next: NextFunction) => {
-  limiter(req, res, (error: any) => {
-    if (error) {
-      return res.status(429).json({ message: error.message })
-    }
-    next()
-  })
-}
+const requestLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 5,
+  handler: (req, res) => {
+    res.status(429).json({ message: 'Too many requests, please try again later' })
+  }
+})
 
-export default rateLimiter
+export default requestLimiter

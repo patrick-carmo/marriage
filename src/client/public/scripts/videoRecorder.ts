@@ -6,6 +6,7 @@ const formBtns = document.querySelectorAll('.hiddenBtn') as NodeListOf<HTMLEleme
 const sendBtn = document.getElementById('send') as HTMLButtonElement
 const cancelBtn = document.getElementById('cancel') as HTMLButtonElement
 const resetBtn = document.getElementById('reset') as HTMLButtonElement
+const progressBar = document.getElementById('progressBar') as HTMLProgressElement
 
 let mediaRecorder: MediaRecorder | null = null
 let blob: Blob | null = null
@@ -13,13 +14,28 @@ let url: string | null = null
 const chunks: BlobPart[] = []
 
 const labelText = labelFile.textContent
-
-let controller: AbortController = new AbortController()
+let progressInterval: NodeJS.Timeout
 
 const changeStateBtns = (state: boolean) => {
   formBtns.forEach(btn => {
     btn.style.display = state ? 'block' : 'none'
   })
+}
+
+const updateProgressBar = async () => {
+  try {
+    const response = await fetch('/progress')
+
+    if (!response.ok) {
+      console.error('Failed to fetch progress:', response.statusText)
+      return
+    }
+
+    const data = await response.json()
+    progressBar.value = data.progress
+  } catch (error) {
+    console.error('Error updating progress bar:', error)
+  }
 }
 
 const resetAll = () => {
@@ -28,10 +44,10 @@ const resetAll = () => {
   file.value = ''
   if (mediaRecorder) mediaRecorder.stop()
   if (url) URL.revokeObjectURL(url)
-  controller.abort()
 }
 
 const sendForm = async () => {
+  progressBar.style.display = 'block'
   if (file.value === '') {
     message.style.display = 'block'
     message.textContent = 'Select a file to send'
@@ -46,13 +62,10 @@ const sendForm = async () => {
   message.style.display = 'block'
   message.textContent = 'Sending...'
 
-  controller = new AbortController()
-
   try {
-    const response: Response = await fetch('/upload', {
+    const response = await fetch('/upload', {
       method: 'POST',
       body: formData,
-      signal: controller.signal,
     })
 
     const data = await response.json()
@@ -78,18 +91,21 @@ const sendForm = async () => {
     }
 
     message.textContent = error.message
+  } finally {
+    clearInterval(progressInterval)
+    progressBar.style.display = 'none'
+    progressBar.value = 0
   }
 }
 
 const abortRecording = () => {
-  controller.abort()
   changeStateBtns(true)
   cancelBtn.style.display = 'none'
 }
 
 file?.addEventListener('change', () => {
   const data = file.files
-  if(!data?.length){
+  if (!data?.length) {
     resetAll()
     message.style.display = 'none'
     return
@@ -106,13 +122,14 @@ resetBtn?.addEventListener('click', () => {
   message.style.display = 'none'
 })
 
-form?.addEventListener('submit', (e: Event) => {
+form?.addEventListener('submit', e => {
   e.preventDefault()
+  progressInterval = setInterval(updateProgressBar, 500)
+  progressBar.style.display = 'block'
   sendForm()
 })
 
-cancelBtn?.addEventListener('click', (e: Event) => {
+cancelBtn?.addEventListener('click', async e => {
   e.preventDefault()
   abortRecording()
-  console.log('cancelado')
 })

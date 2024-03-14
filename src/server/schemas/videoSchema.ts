@@ -15,7 +15,17 @@ const videoSchema = Joi.object({
       .messages(messages),
   })
     .required()
-    .messages(messages).unknown(),
+    .messages(messages)
+    .unknown(),
 }).messages(messages)
 
-export default videoSchema
+const paramsSchema = Joi.object({
+  params: Joi.object({
+    id: Joi.string().required().messages({
+      'string.empty': 'Por favor, envie um id.',
+      'any.required': 'Por favor, envie um id.',
+    }),
+  }).unknown(),
+}).unknown()
+
+export { videoSchema, paramsSchema }
