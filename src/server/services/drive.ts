@@ -32,6 +32,19 @@ const uploadFile = async (fileData: Express.Multer.File): Promise<{ video_link: 
       requestBody,
       media,
       fields: 'id',
+    }, {
+      onUploadProgress: (event) => {
+        const progress = Math.round((event.bytesRead / fileData.size) * 100)
+
+        const absoluteUrl = process.env.PROGRESS_URL as string
+        fetch(absoluteUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ progress }),
+        })
+      },
     })
 
     const data = {
@@ -39,6 +52,19 @@ const uploadFile = async (fileData: Express.Multer.File): Promise<{ video_link: 
     }
 
     return data
+  } catch (error: any) {
+    throw error
+  }
+}
+
+const deleteFile = async (fileId: string) => {
+  try {
+    const drive = google.drive({ version: 'v3', auth: await authorization() })
+
+    await drive.files.delete({
+      fileId,
+    })
+
   } catch (error: any) {
     throw error
   }
@@ -74,4 +100,4 @@ const deleteAllFiles = async () => {
 
 // deleteAllFiles()
 
-export { uploadFile }
+export { uploadFile, deleteFile }
