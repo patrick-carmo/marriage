@@ -28,24 +28,33 @@ const uploadFile = async (fileData: Express.Multer.File): Promise<{ video_link: 
       body: fs.createReadStream(path),
     }
 
-    const file = await service.files.create({
-      requestBody,
-      media,
-      fields: 'id',
-    }, {
-      onUploadProgress: (event) => {
-        const progress = Math.round((event.bytesRead / fileData.size) * 100)
+    let lastProgress: number = 0
 
-        const absoluteUrl = process.env.PROGRESS_URL as string
-        fetch(absoluteUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ progress }),
-        })
+    const file = await service.files.create(
+      {
+        requestBody,
+        media,
+        fields: 'id',
       },
-    })
+      {
+        onUploadProgress: event => {
+          const progress = Math.round((event.bytesRead / fileData.size) * 100)
+          const absoluteUrl = process.env.PROGRESS_URL as string
+
+          if (progress >= lastProgress + 2) {
+            lastProgress = progress
+
+            fetch(absoluteUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ progress }),
+            })
+          }
+        },
+      }
+    )
 
     const data = {
       video_link: `https://drive.google.com/file/d/${file.data.id}/preview`,
@@ -64,7 +73,6 @@ const deleteFile = async (fileId: string) => {
     await drive.files.delete({
       fileId,
     })
-
   } catch (error: any) {
     throw error
   }

@@ -4,7 +4,6 @@ const file = document.getElementById('data') as HTMLInputElement
 const labelFile = document.getElementById('labelData') as HTMLLabelElement
 const formBtns = document.querySelectorAll('.hiddenBtn') as NodeListOf<HTMLElement>
 const sendBtn = document.getElementById('send') as HTMLButtonElement
-const cancelBtn = document.getElementById('cancel') as HTMLButtonElement
 const resetBtn = document.getElementById('reset') as HTMLButtonElement
 const progressBar = document.getElementById('progressBar') as HTMLProgressElement
 
@@ -14,7 +13,6 @@ let url: string | null = null
 const chunks: BlobPart[] = []
 
 const labelText = labelFile.textContent
-let progressInterval: NodeJS.Timeout
 
 const changeStateBtns = (state: boolean) => {
   formBtns.forEach(btn => {
@@ -22,24 +20,28 @@ const changeStateBtns = (state: boolean) => {
   })
 }
 
+let progressInterval: NodeJS.Timeout
+
 const updateProgressBar = async () => {
   try {
     const response = await fetch('/progress')
 
     if (!response.ok) {
-      console.error('Failed to fetch progress:', response.statusText)
+      message.textContent = 'Error updating progress bar'
+      clearInterval(progressInterval)
       return
     }
 
     const data = await response.json()
+
     if (data.progress > 0 && data.progress < 100) {
-      message.style.display = 'block'
       message.textContent = `Uploading... ${data.progress}%`
-      console.log(`Progress: ${data.progress}%`)
     }
+
     progressBar.value = data.progress
   } catch (error) {
-    console.error('Error updating progress bar:', error)
+    clearInterval(progressInterval)
+    message.textContent = 'Error updating progress bar'
   }
 }
 
@@ -56,19 +58,16 @@ const resetAll = () => {
 
 const sendForm = async () => {
   progressBar.style.display = 'block'
+  message.style.display = 'block'
 
   if (file.value === '') {
-    message.style.display = 'block'
     message.textContent = 'Select a file to send'
     return
   }
 
   changeStateBtns(false)
-  cancelBtn.style.display = 'block'
 
   const formData = new FormData(form)
-
-  message.style.display = 'block'
   message.textContent = 'Starting the upload...'
 
   try {
@@ -83,7 +82,6 @@ const sendForm = async () => {
       message.textContent = data.message
 
       changeStateBtns(true)
-      cancelBtn.style.display = 'none'
       return
     }
 
@@ -111,7 +109,6 @@ file?.addEventListener('change', () => {
   }
 
   changeStateBtns(true)
-  cancelBtn.style.display = 'none'
 
   labelFile.textContent = data[0].name
 })
@@ -123,7 +120,7 @@ resetBtn?.addEventListener('click', () => {
 
 form?.addEventListener('submit', e => {
   e.preventDefault()
-  progressInterval = setInterval(updateProgressBar, 1000)
+  progressInterval = setInterval(updateProgressBar, 2000)
   progressBar.style.display = 'block'
   sendForm()
 })

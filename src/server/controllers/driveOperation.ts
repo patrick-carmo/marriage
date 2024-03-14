@@ -13,8 +13,11 @@ const uploadVideo = async (req: Request, res: Response) => {
     const file = req.file!
     const data = await uploadFile(file)
 
-    return res.json(data)
+    await redisClient.del('progress')
+
+    return res.status(200).json(data)
   } catch (error: any) {
+    await redisClient.del('progress')
     return res.status(500).json({ message: error.message })
   }
 }
@@ -30,28 +33,26 @@ const deleteVideo = async (req: Request, res: Response) => {
   }
 }
 
-const progressPost = async (req: Request, res: Response) => {
+const postProgress = async (req: Request, res: Response) => {
   const { progress } = req.body as { progress: number }
 
   try {
-    await redisClient.set('progress', progress)
-    res.status(200).send()
+    await redisClient.set(`progress`, progress)
+    res.status(204).send()
   } catch {
     res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 
-const progressGet = async (_: Request, res: Response) => {
+const getProgress = async (_: Request, res: Response) => {
   try {
-    const progressRedis = await redisClient.get('progress')
-    const progress = Number(progressRedis)
-    
-    if (progress >= 99) {
-      await redisClient.del('progress')
-      return res.status(200).json({ progress: 100 })
+    const progressRedis = await redisClient.get(`progress`)
+
+    if (progressRedis === null) {
+      return res.status(200).json({ progress: 0 })
     }
 
-    res.status(200).json({ progress })
+    res.status(200).json({ progress: Number(progressRedis) })
   } catch {
     res.status(500).json({ message: 'Erro interno do servidor' })
   }
@@ -59,4 +60,4 @@ const progressGet = async (_: Request, res: Response) => {
 
 export default deleteVideo
 
-export { uploadVideo, deleteVideo, progressPost, progressGet }
+export { uploadVideo, deleteVideo, postProgress, getProgress }
