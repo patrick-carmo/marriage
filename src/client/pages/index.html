@@ -10,6 +10,7 @@
 
 <body>
     <main class="centerFlex">
+        <div id="profile" class="centerFlex"></div>
         <h1>Recorder</h1>
         <form id="uploadForm" class="centerFlex">
             <label for="data" id="labelData">Start Recorder</label>
@@ -19,9 +20,10 @@
             <input type="submit" value="Send" class="hiddenBtn" id="send">
         </form>
         <p id="message"></p>
+        <a href="/logout">Logout</a>
     </main>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="../scripts/videoRecorder.js"></script>
+    <script src="../scripts/profile.js"></script>
 </body>
 
 </html>

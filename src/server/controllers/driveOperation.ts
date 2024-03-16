@@ -1,23 +1,24 @@
 import { Request, Response } from 'express'
 import { uploadFile, deleteFile } from '../services/drive'
-import * as redis from 'redis'
+import client from '../../config/redis'
 
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL,
-})
-
-redisClient.connect()
+declare module 'express-session' {
+  interface SessionData {
+    passport?: any
+  }
+}
 
 const uploadVideo = async (req: Request, res: Response) => {
   try {
     const file = req.file!
+
     const data = await uploadFile(file)
 
-    await redisClient.del('progress')
+    client.del(`progress_id=${req.session.passport.user.google_id}`)
 
     return res.status(200).json(data)
   } catch (error: any) {
-    await redisClient.del('progress')
+    client.del(`progress_id=${req.session.passport.user.google_id}`)
     return res.status(500).json({ message: error.message })
   }
 }
@@ -37,16 +38,21 @@ const postProgress = async (req: Request, res: Response) => {
   const { progress } = req.body as { progress: number }
 
   try {
-    await redisClient.set(`progress`, progress)
+    const id = req.session.passport.user.google_id
+
+    await client.set(`progress_id=${id}`, progress, { EX: 60 })
+
     res.status(204).send()
   } catch {
     res.status(500).json({ message: 'Erro interno do servidor' })
   }
 }
 
-const getProgress = async (_: Request, res: Response) => {
+const getProgress = async (req: Request, res: Response) => {
   try {
-    const progressRedis = await redisClient.get(`progress`)
+    const id = req.session.passport.user.google_id
+
+    const progressRedis = await client.get(`progress_id=${id}`)
 
     if (progressRedis === null) {
       return res.status(200).json({ progress: 0 })

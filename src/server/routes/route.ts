@@ -1,21 +1,34 @@
 import { Router } from 'express'
-import { Response } from 'express'
 
-import path from 'path'
 import { multerVideo } from '../middlewares/multer'
 import requestLimiter from '../middlewares/rateLimiter'
-import { uploadVideo, deleteVideo, getProgress, postProgress } from '../controllers/driveOperation'
-import validateRequest from '../middlewares/validateRequest'
 import { videoSchema, paramsSchema } from '../schemas/videoSchema'
+
+import { googleAuth, callback, failure } from '../controllers/googleAuth'
+import { index, login, logout } from '../controllers/pages'
+import { profile } from '../controllers/user'
+
+import validateRequest from '../middlewares/validateRequest'
+import loginVerify from '../middlewares/loginVerify'
+
+import { uploadVideo, deleteVideo, getProgress, postProgress } from '../controllers/driveOperation'
 
 const route: Router = Router()
 
-route.get('/', (_, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../client/pages/index.html'))
-})
+route.get('/auth/google', googleAuth)
+route.get('/auth/google/callback', callback)
+route.get('/auth/google/failure', failure)
+
+route.get('/login', login)
+route.get('/logout', logout)
 
 route.post('/progress', postProgress)
 route.get('/progress', getProgress)
+
+route.use(loginVerify)
+
+route.get('/profile', profile)
+route.get('/', index)
 
 route.post('/upload', multerVideo('data'), validateRequest(videoSchema), uploadVideo)
 route.delete('/delete/:id', validateRequest(paramsSchema), deleteVideo)

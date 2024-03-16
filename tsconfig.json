@@ -12,11 +12,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
-    "sourceMap": true,
+    "sourceMap": true
   },
-  "include": [
-    "src/**/*",
-    "client/**/*",
-  ],
+  "include": ["src/**/*", "client/**/*", "src/types"],
   "exclude": ["node_modules", "dist"]
 }

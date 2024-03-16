@@ -46,6 +46,7 @@ const updateProgressBar = async () => {
 }
 
 const resetAll = () => {
+  file.disabled = false
   labelFile.textContent = labelText
   changeStateBtns(false)
   file.value = ''
@@ -71,6 +72,8 @@ const sendForm = async () => {
   message.textContent = 'Starting the upload...'
 
   try {
+    file.disabled = true
+
     const response = await fetch('/upload', {
       method: 'POST',
       body: formData,
