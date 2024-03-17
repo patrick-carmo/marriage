@@ -12,7 +12,7 @@ const authorization = async () => {
   }
 }
 
-const uploadFile = async (fileData: Express.Multer.File): Promise<{ video_link: string }> => {
+const uploadFile = async (fileData: Express.Multer.File, uuid: string): Promise<{ video_link: string }> => {
   try {
     const { path, mimetype: mimeType, originalname: name } = fileData
 
@@ -49,7 +49,7 @@ const uploadFile = async (fileData: Express.Multer.File): Promise<{ video_link: 
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ progress }),
+              body: JSON.stringify({ progress, uuid }),
             })
           }
         },

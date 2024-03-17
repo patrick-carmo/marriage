@@ -23,7 +23,7 @@ route.get('/login', login)
 route.get('/logout', logout)
 
 route.post('/progress', postProgress)
-route.get('/progress', getProgress)
+route.get('/progress/:uuid', getProgress)
 
 route.use(loginVerify)
 

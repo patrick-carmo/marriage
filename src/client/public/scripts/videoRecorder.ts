@@ -22,9 +22,9 @@ const changeStateBtns = (state: boolean) => {
 
 let progressInterval: NodeJS.Timeout
 
-const updateProgressBar = async () => {
+const updateProgressBar = async (uuid: string) => {
   try {
-    const response = await fetch('/progress')
+    const response = await fetch(`/progress/${uuid}`)
 
     if (!response.ok) {
       message.textContent = 'Error updating progress bar'
@@ -57,7 +57,7 @@ const resetAll = () => {
   progressBar.value = 0
 }
 
-const sendForm = async () => {
+const sendForm = async (uuid: string) => {
   progressBar.style.display = 'block'
   message.style.display = 'block'
 
@@ -69,6 +69,8 @@ const sendForm = async () => {
   changeStateBtns(false)
 
   const formData = new FormData(form)
+  formData.append('uuid', uuid)
+
   message.textContent = 'Starting the upload...'
 
   try {
@@ -123,7 +125,9 @@ resetBtn?.addEventListener('click', () => {
 
 form?.addEventListener('submit', e => {
   e.preventDefault()
-  progressInterval = setInterval(updateProgressBar, 2000)
+  const uuid: string = crypto.randomUUID()
+
+  progressInterval = setInterval(() => updateProgressBar(uuid), 2000)
   progressBar.style.display = 'block'
-  sendForm()
+  sendForm(uuid)
 })

@@ -26,6 +26,6 @@ const paramsSchema = Joi.object({
       'any.required': 'Por favor, envie um id.',
     }),
   }).unknown(),
-}).unknown()
+})
 
 export { videoSchema, paramsSchema }
