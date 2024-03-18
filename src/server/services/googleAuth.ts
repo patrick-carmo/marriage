@@ -14,27 +14,27 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       const { id, displayName, email, picture } = profile
 
-      const userData = { google_id: id, email, name: displayName, picture, last_login: new Date() }
+      const newUserData = { google_id: id, email, name: displayName, picture, last_login: new Date() }
 
-      const user = await knex<User>('users').where({ google_id: id }).first()
+      const foundUser = await knex<User>('users').where({ google_id: id }).first()
 
-      if (!user) {
-        await knex<User>('users').insert(userData)
+      if (!foundUser) {
+        const user = await knex<User>('users').insert(newUserData).returning('*')
 
-        client.set(id, JSON.stringify(userData), {
+        client.set(id, JSON.stringify(user[0]), {
           EX: 3600 * 24,
         })
 
-        return done(null, userData)
+        return done(null, user[0])
       }
 
-      await knex<User>('users').where({ google_id: id }).update(userData)
+      const user = await knex<User>('users').where({ google_id: id }).update(newUserData).returning('*')
 
-      client.set(id, JSON.stringify(userData), {
+      client.set(id, JSON.stringify(user[0]), {
         EX: 3600 * 24,
       })
 
-      return done(null, userData)
+      return done(null, user[0])
     }
   )
 )

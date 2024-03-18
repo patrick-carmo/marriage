@@ -6,7 +6,7 @@ import { videoSchema, paramsSchema } from '../schemas/videoSchema'
 
 import { googleAuth, callback, failure } from '../controllers/googleAuth'
 import { index, login, logout } from '../controllers/pages'
-import { profile } from '../controllers/user'
+import { profile } from '../controllers/profile'
 
 import validateRequest from '../middlewares/validateRequest'
 import loginVerify from '../middlewares/loginVerify'

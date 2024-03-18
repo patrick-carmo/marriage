@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'
 import { User } from '../interfaces/user'
 
-const profile = (req: Request, res: Response) => {
+const profile = async (req: Request, res: Response) => {
   const user = req.user as User
-  
-  return res.status(200).json(user)
+  const { name, picture } = user
+
+  return res.status(200).json({ name, picture })
 }
 
 export { profile }

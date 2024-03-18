@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { google } from 'googleapis'
+import { Images } from '../interfaces/image'
 
 const authorization = async () => {
   try {
@@ -12,7 +13,36 @@ const authorization = async () => {
   }
 }
 
-const uploadFile = async (fileData: Express.Multer.File, uuid: string): Promise<{ video_link: string }> => {
+const createFolder = async (name: string) => {
+  const service = google.drive({ version: 'v3', auth: await authorization() })
+
+  const fileMetaData = {
+    name,
+    parents: [process.env.DRIVE_FOLDER as string],
+    mimeType: process.env.DRIVE_MIMETYPE,
+  }
+
+  try {
+    const file = await service.files.create({
+      requestBody: fileMetaData,
+      fields: 'id',
+    })
+
+    if (!file.data.id) {
+      throw new Error('Error creating folder')
+    }
+
+    return file.data.id
+  } catch (error: any) {
+    throw error
+  }
+}
+
+const uploadFile = async (
+  fileData: Express.Multer.File,
+  uuid: string,
+  folder_id: string
+): Promise<Pick<Images, 'id' | 'url'>> => {
   try {
     const { path, mimetype: mimeType, originalname: name } = fileData
 
@@ -20,7 +50,7 @@ const uploadFile = async (fileData: Express.Multer.File, uuid: string): Promise<
 
     const requestBody = {
       name,
-      parents: [process.env.DRIVE_FOLDER as string],
+      parents: [folder_id],
     }
 
     const media = {
@@ -56,11 +86,18 @@ const uploadFile = async (fileData: Express.Multer.File, uuid: string): Promise<
       }
     )
 
-    const data = {
-      video_link: `https://drive.google.com/file/d/${file.data.id}/preview`,
+    const { id } = file.data
+
+    if (!id) {
+      throw new Error('Error uploading file')
     }
 
-    return data
+    const image = {
+      id,
+      url: `https://drive.google.com/file/d/${id}/preview`,
+    }
+
+    return image
   } catch (error: any) {
     throw error
   }
@@ -73,6 +110,7 @@ const deleteFile = async (fileId: string) => {
     await drive.files.delete({
       fileId,
     })
+
   } catch (error: any) {
     throw error
   }
@@ -108,4 +146,4 @@ const deleteAllFiles = async () => {
 
 // deleteAllFiles()
 
-export { uploadFile, deleteFile }
+export { uploadFile, deleteFile, createFolder }

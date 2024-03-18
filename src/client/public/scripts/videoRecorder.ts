@@ -93,7 +93,7 @@ const sendForm = async (uuid: string) => {
     message.textContent = `Sent successfully`
 
     resetAll()
-    message.innerHTML = `The video was uploaded successfully: <a href="${data.video_link}" target="_blank">Link</a>`
+    message.innerHTML = `The video was uploaded successfully: <a href="${data.url}" target="_blank">Link</a>`
   } catch (error: any) {
     resetAll()
     message.style.display = 'block'
