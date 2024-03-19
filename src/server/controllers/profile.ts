@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+
 import { User } from '../interfaces/user'
 
 const profile = async (req: Request, res: Response) => {

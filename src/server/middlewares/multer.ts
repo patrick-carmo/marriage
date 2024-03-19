@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { uploadVideo } from '../utils/multerConfig'
+import { uploadVideo } from '../utils/multer/multerConfig'
 
 const multerVideo = (field: string) => (req: Request, res: Response, next: NextFunction) => {
   uploadVideo.single(field)(req, res, (error: any) => {

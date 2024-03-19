@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { google } from 'googleapis'
-import { Images } from '../interfaces/image'
+import { ImagesData } from '../interfaces/image'
 
 const authorization = async () => {
   try {
@@ -13,7 +13,26 @@ const authorization = async () => {
   }
 }
 
-const createFolder = async (name: string) => {
+const searchFolder = async (folder: string): Promise<string | null> => {
+  try {
+    const service = google.drive({ version: 'v3', auth: await authorization() })
+
+    const file = await service.files.get({
+      fileId: folder,
+      fields: 'id',
+    })
+
+    if (!file.data.id) {
+      return null
+    }
+
+    return file.data.id
+  } catch (error: any) {
+    return null
+  }
+}
+
+const createFolder = async (name: string): Promise<string> => {
   const service = google.drive({ version: 'v3', auth: await authorization() })
 
   const fileMetaData = {
@@ -42,7 +61,7 @@ const uploadFile = async (
   fileData: Express.Multer.File,
   uuid: string,
   folder_id: string
-): Promise<Pick<Images, 'id' | 'url'>> => {
+): Promise<ImagesData> => {
   try {
     const { path, mimetype: mimeType, originalname: name } = fileData
 
@@ -86,15 +105,15 @@ const uploadFile = async (
       }
     )
 
-    const { id } = file.data
+    const { id: image_id } = file.data
 
-    if (!id) {
+    if (!image_id) {
       throw new Error('Error uploading file')
     }
 
-    const image = {
-      id,
-      url: `https://drive.google.com/file/d/${id}/preview`,
+    const image: ImagesData = {
+      image_id,
+      url: `https://drive.google.com/file/d/${image_id}/preview`,
     }
 
     return image
@@ -105,12 +124,11 @@ const uploadFile = async (
 
 const deleteFile = async (fileId: string) => {
   try {
-    const drive = google.drive({ version: 'v3', auth: await authorization() })
+    const service = google.drive({ version: 'v3', auth: await authorization() })
 
-    await drive.files.delete({
+    await service.files.delete({
       fileId,
     })
-
   } catch (error: any) {
     throw error
   }
@@ -118,27 +136,27 @@ const deleteFile = async (fileId: string) => {
 
 const deleteAllFiles = async () => {
   try {
-    const drive = google.drive({ version: 'v3', auth: await authorization() })
+    const service = google.drive({ version: 'v3', auth: await authorization() })
 
-    const response = await drive.files.list({
+    const file = await service.files.list({
       q: `'${process.env.DRIVE_FOLDER}' in parents`,
       fields: 'files(id, name, webViewLink)',
     })
-    const files = response.data.files
+    const files = file.data.files
 
     if (!files || files.length === 0) {
-      return console.log('Nenhum arquivo encontrado.')
+      return console.log('No files found.')
     }
     console.log(files)
 
     for (const file of files) {
-      await drive.files.delete({
+      await service.files.delete({
         fileId: file.id as string,
       })
-      console.log(`Arquivo "${file.name}" excluído.`)
+      console.log(`File "${file.name}" deleted.`)
     }
 
-    console.log('Todas os arquivos foram excluídos.')
+    console.log('All files deleted')
   } catch (error: any) {
     console.error(error.message)
   }
@@ -146,4 +164,4 @@ const deleteAllFiles = async () => {
 
 // deleteAllFiles()
 
-export { uploadFile, deleteFile, createFolder }
+export { uploadFile, deleteFile, createFolder, searchFolder }

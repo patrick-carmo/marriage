@@ -2,28 +2,22 @@ import { Request, Response } from 'express'
 import knex from '../../config/database'
 import client from '../../config/redis'
 
-import { createFolder, uploadFile, deleteFile } from '../services/drive'
-
 import { User } from '../interfaces/user'
-import { ImageFolder } from '../interfaces/image'
+
+import { uploadFile, deleteFile } from '../services/drive'
+import { getOrCreateFolder, saveImageData } from '../utils/driveOperation/fileRecorder'
 
 const uploadVideo = async (req: Request, res: Response) => {
   const file = req.file!
   const { uuid } = req.body
-  const { id, name } = req.user as User
+  const { id: user_id, name } = req.user as User
 
   try {
-    const userFolder: ImageFolder = await knex('image_folder').where({ user_id: id }).first()
+    const folder_id = await getOrCreateFolder(user_id, name)
 
-    const folderId: string = userFolder ? userFolder.id : await createFolder(name)
+    const data = await uploadFile(file, uuid, folder_id)
 
-    const data = await uploadFile(file, uuid, folderId)
-
-    if (!userFolder) {
-      await knex('image_folder').insert({ id: folderId, user_id: id })
-    }
-
-    await knex('images').insert({ id: data.id, url: data.url, user_id: id, folder_id: folderId })
+    await saveImageData(data, user_id, folder_id)
 
     return res.status(200).json(data)
   } catch (error: any) {

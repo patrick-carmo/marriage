@@ -9,15 +9,17 @@ create table users (
 );
 
 create table image_folder (
-	id text primary key,
+	id serial primary key,
+  folder_id text not null unique,
   user_id integer not null references users(id),
   created_at timestamp not null default now()
 );
 
 create table images (
-	id text primary key,
+	id serial primary key,
+  image_id text not null unique,
   url text not null,
   user_id integer not null references users(id),
-  folder_id text not null references image_folder(id),
+  image_folder integer not null references image_folder(id),
   created_at timestamp not null default now()
 );

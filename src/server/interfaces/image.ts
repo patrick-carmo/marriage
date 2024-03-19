@@ -1,15 +1,22 @@
 interface ImageFolder {
-  id: string;
-  user_id: number;
-  created_at: string;
+  id: number
+  folder_id: string
+  user_id: number
+  created_at: string
 }
 
 interface Images {
-  id: string;
-  url: string;
-  user_id: number;
-  folder_id: string;
-  created_at: string;
+  id: number
+  image_id: string
+  url: string
+  user_id: number
+  folder_id: string
+  created_at: string
 }
 
-export { ImageFolder, Images }
+interface ImagesData {
+  image_id: string
+  url: string
+}
+
+export { ImageFolder, Images, ImagesData }
