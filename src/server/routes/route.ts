@@ -12,6 +12,7 @@ import validateRequest from '../middlewares/validateRequest'
 import loginVerify from '../middlewares/loginVerify'
 
 import { uploadVideo, deleteVideo, getProgress, postProgress } from '../controllers/driveOperation'
+import { showVideos } from '../controllers/showVideos'
 
 const route: Router = Router()
 
@@ -32,5 +33,7 @@ route.get('/', index)
 
 route.post('/upload', multerVideo('data'), validateRequest(videoSchema), uploadVideo)
 route.delete('/delete/:id', validateRequest(paramsSchema), deleteVideo)
+
+// route.get('/showVideos', showVideos)
 
 export default route

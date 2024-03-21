@@ -25,11 +25,11 @@ const saveImageFolder = async (user_id: number, folder_id: string): Promise<numb
     const newFolder = await knex<ImageFolder>('image_folder').insert({ folder_id, user_id }).returning('id')
 
     return newFolder[0].id
-  } else {
-    await knex('image_folder').where({ user_id }).update({ folder_id })
-    
-    return existingFolder.id
   }
+  
+  await knex('image_folder').where({ user_id }).update({ folder_id })
+
+  return existingFolder.id
 }
 
 export { getOrCreateFolder, saveImageData }

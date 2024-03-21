@@ -5,25 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recorder</title>
-    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/profile.css">
 </head>
 
 <body>
-    <main class="centerFlex">
-        <div id="profile" class="centerFlex"></div>
-        <h1>Recorder</h1>
-        <form id="uploadForm" class="centerFlex">
-            <label for="data" id="labelData">Start Recorder</label>
-            <input type="file" name="data" id="data" accept="video/*," capture>
-            <progress id="progressBar" value="0" max="100"></progress>
-            <input type="reset" value="Reset" class="hiddenBtn" id="reset">
-            <input type="submit" value="Send" class="hiddenBtn" id="send">
-        </form>
-        <p id="message"></p>
-        <a href="/logout">Logout</a>
+    <main class="centerMain">
+        <div class="centerFlex">
+            <div id="profile" class="centerFlex"></div>
+            <form id="uploadForm" class="centerFlex">
+                <label for="data" id="labelData">Start Recorder</label>
+                <input type="file" name="data" id="data" accept="video/*," capture>
+                <progress id="progressBar" value="0" max="100"></progress>
+                <div class="hGrid">
+                    <input type="submit" value="Send" class="hiddenBtn" id="send">
+                    <input type="reset" value="Reset" class="hiddenBtn" id="reset">
+                </div>
+            </form>
+            <p id="message"></p>
+            <a href="/logout">Logout</a>
+        </div>
     </main>
-    <script src="../scripts/videoRecorder.js"></script>
     <script src="../scripts/profile.js"></script>
+    <script src="../scripts/videoRecorder.js"></script>
 </body>
 
 </html>

@@ -48,7 +48,7 @@ const postProgress = async (req: Request, res: Response) => {
 
     res.status(204).send()
   } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' })
+    res.status(500).json({ message: 'Internal server error' })
   }
 }
 
@@ -57,13 +57,13 @@ const getProgress = async (req: Request, res: Response) => {
   try {
     const progressRedis = await client.get(`progress_id=${uuid}`)
 
-    if (progressRedis === null) {
+    if (!progressRedis) {
       return res.status(200).json({ progress: 0 })
     }
 
     res.status(200).json({ progress: Number(progressRedis) })
   } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' })
+    res.status(500).json({ message: 'Internal server error' })
   }
 }
 
