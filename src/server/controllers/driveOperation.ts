@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import knex from '../../config/database'
 import client from '../../config/redis'
+import env from '../../config/envConfig'
 
 import { User } from '../interfaces/user'
 
@@ -23,7 +24,7 @@ const uploadVideo = async (req: Request, res: Response) => {
   } catch (error: any) {
     return res.status(500).json({ message: error.message })
   } finally {
-    client.del(`progress_id=${uuid}`)
+    client.del(`${env.SERVER}-progress-${uuid}`)
   }
 }
 
@@ -44,7 +45,7 @@ const postProgress = async (req: Request, res: Response) => {
   const { progress, uuid } = req.body
 
   try {
-    await client.set(`progress_id=${uuid}`, progress, { EX: 60 })
+    await client.set(`${env.SERVER}-progress_id-${uuid}`, progress, { EX: 60 })
 
     res.status(204).send()
   } catch {
@@ -55,7 +56,7 @@ const postProgress = async (req: Request, res: Response) => {
 const getProgress = async (req: Request, res: Response) => {
   const { uuid } = req.params
   try {
-    const progressRedis = await client.get(`progress_id=${uuid}`)
+    const progressRedis = await client.get(`${env.SERVER}-progress_id-${uuid}`)
 
     if (!progressRedis) {
       return res.status(200).json({ progress: 0 })

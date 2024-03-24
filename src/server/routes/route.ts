@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import { multerVideo } from '../middlewares/multer'
-import requestLimiter from '../middlewares/rateLimiter'
+// import rateLimiter from '../middlewares/rateLimiter'
 import { videoSchema, paramsSchema } from '../schemas/videoSchema'
 
 import { googleAuth, callback, failure } from '../controllers/googleAuth'
@@ -12,7 +12,8 @@ import validateRequest from '../middlewares/validateRequest'
 import loginVerify from '../middlewares/loginVerify'
 
 import { uploadVideo, deleteVideo, getProgress, postProgress } from '../controllers/driveOperation'
-import { showVideos } from '../controllers/showVideos'
+import rateLimiter from '../middlewares/rateLimiter'
+// import { showVideos } from '../controllers/showVideos'
 
 const route: Router = Router()
 
@@ -31,7 +32,7 @@ route.use(loginVerify)
 route.get('/profile', profile)
 route.get('/', index)
 
-route.post('/upload', multerVideo('data'), validateRequest(videoSchema), uploadVideo)
+route.post('/upload', rateLimiter, multerVideo('data'), validateRequest(videoSchema), uploadVideo)
 route.delete('/delete/:id', validateRequest(paramsSchema), deleteVideo)
 
 // route.get('/showVideos', showVideos)

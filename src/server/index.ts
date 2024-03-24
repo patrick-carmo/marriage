@@ -1,7 +1,7 @@
 import 'dotenv/config'
+import env from '../config/envConfig'
 import express, { Express } from 'express'
 
-import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import passport from 'passport'
 
@@ -10,19 +10,22 @@ import RedisStore from 'connect-redis'
 import client from '../config/redis'
 
 const app: Express = express()
-const PORT = process.env.PORT || 3000
 
 import route from './routes/route'
 
 client.connect()
 
-app.use(cookieParser())
 app.use(
   session({
-    secret: process.env.SECRET as string,
+    secret: env.SECRET,
     resave: false,
     saveUninitialized: false,
-    store: new RedisStore({ client, ttl: 3600 }),
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60,
+    },
+    rolling: true,
+    store: new RedisStore({ client, ttl: 86400 }),
   })
 )
 app.use(passport.initialize())
@@ -32,6 +35,6 @@ app.use(express.static(path.join(__dirname, '../client/public')))
 app.use(express.json())
 app.use(route)
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`)
+app.listen(env.PORT, () => {
+  console.log(`The server is running on port ${env.PORT}`)
 })

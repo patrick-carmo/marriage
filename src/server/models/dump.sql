@@ -4,7 +4,7 @@ create table users (
   email text not null unique,
   name text not null,
   picture text,
-  last_login text not null default now(),
+  last_login timestamp not null default now(),
   created_at timestamp not null default now()
 );
 

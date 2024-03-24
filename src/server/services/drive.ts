@@ -1,10 +1,11 @@
 import fs from 'fs'
 import { google } from 'googleapis'
 import { ImagesData } from '../interfaces/image'
+import env from '../../config/envConfig'
 
 const authorization = async () => {
   try {
-    const jwt = new google.auth.JWT(process.env.DRIVE_EMAIL, undefined, process.env.DRIVE_KEY, process.env.DRIVE_SCOPE)
+    const jwt = new google.auth.JWT(env.DRIVE_EMAIL, undefined, env.DRIVE_KEY, env.DRIVE_SCOPE)
     await jwt.authorize()
 
     return jwt
@@ -37,8 +38,8 @@ const createFolder = async (name: string): Promise<string> => {
 
   const fileMetaData = {
     name,
-    parents: [process.env.DRIVE_FOLDER as string],
-    mimeType: process.env.DRIVE_MIMETYPE,
+    parents: [env.DRIVE_FOLDER],
+    mimeType: env.DRIVE_MIMETYPE,
   }
 
   try {
@@ -88,7 +89,7 @@ const uploadFile = async (
       {
         onUploadProgress: event => {
           const progress = Math.round((event.bytesRead / fileData.size) * 100)
-          const absoluteUrl = process.env.PROGRESS_URL as string
+          const absoluteUrl = env.PROGRESS_URL
 
           if (progress >= lastProgress + 2) {
             lastProgress = progress
@@ -139,7 +140,7 @@ const deleteAllFiles = async () => {
     const service = google.drive({ version: 'v3', auth: await authorization() })
 
     const file = await service.files.list({
-      q: `'${process.env.DRIVE_FOLDER}' in parents`,
+      q: `'${env.DRIVE_FOLDER}' in parents`,
       fields: 'files(id, name, webViewLink)',
     })
     const files = file.data.files

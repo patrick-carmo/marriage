@@ -5,7 +5,6 @@ const loginVerify = (req: Request, res: Response, next: NextFunction) => {
     return res.redirect('/login')
   }
 
-  req.session.touch()
   return next()
 }
 
