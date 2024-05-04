@@ -8,6 +8,10 @@ import {
   IonToolbar,
   IonButton,
 } from '@ionic/angular/standalone';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { Subscription } from 'rxjs';
+import { UtilsService } from 'src/app/services/utils.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +26,7 @@ import {
     IonToolbar,
     CommonModule,
     FormsModule,
+    RouterLink,
   ],
 })
 export class LoginPage implements OnInit {

@@ -22,7 +22,7 @@ client.connect()
 
 app.use(
   cors({
-    origin: env.CORS_ORIGIN.replace(/\/$/, ''),
+    origin: env.SERVER.replace(/\/$/, ''),
     credentials: true,
   })
 )
@@ -53,6 +53,24 @@ app.get('*', (req, res) => {
 
 app.use(errorMiddleware)
 
-app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, () => {
   console.log(`The server is running on port ${env.PORT}`)
+})
+
+process.on('SIGINT', () => {
+  client.quit()
+  console.log('Redis connection closed')
+  server.close(() => {
+    console.log('Server stopped')
+    process.exit(0)
+  })
+})
+
+process.on('SIGTERM', () => {
+  client.quit()
+  console.log('Redis connection closed')
+  server.close(() => {
+    console.log('Server stopped')
+    process.exit(0)
+  })
 })

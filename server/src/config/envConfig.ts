@@ -4,7 +4,6 @@ const env = {
   PORT: env_var.get('PORT').default(3000).asPortNumber(),
   DATABASE_URL: env_var.get('DATABASE_URL').required().asUrlString(),
   SECRET: env_var.get('SECRET').required().asString(),
-  CORS_ORIGIN: env_var.get('CORS_ORIGIN').required().asUrlString(),
   // BUCKET: env_var.get('BUCKET').required().asString(),
   // BUCKET_REGION: env_var.get('BUCKET_REGION').required().asString(),
   // ENDPOINT_S3: env_var.get('ENDPOINT_S3').required().asString(),

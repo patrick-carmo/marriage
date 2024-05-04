@@ -17,19 +17,19 @@ export class UtilsService {
     private router: Router
   ) {}
 
-  showToast(fields: ToastOptions) {
+  async showToast(fields: ToastOptions) {
     const { header, message, color, buttons, duration } = fields;
 
-    this.toast
-      .create({
-        header,
-        message,
-        color,
-        buttons,
-        swipeGesture: 'vertical',
-        duration: duration ?? 2000,
-      })
-      .then((toastMessage) => toastMessage.present());
+    const toast = await this.toast.create({
+      header,
+      message,
+      color,
+      buttons,
+      swipeGesture: 'vertical',
+      duration: duration ?? 2000,
+    });
+
+    await toast.present();
   }
 
   async showLoading(message: string = 'Enviando...') {

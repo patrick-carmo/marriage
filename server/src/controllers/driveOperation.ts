@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import knex from '../config/database'
 import client from '../config/redis'
-import env from '../config/envConfig'
 
 import { User } from '../interfaces/user'
 
@@ -21,11 +20,10 @@ const uploadVideo = async (req: Request, res: Response) => {
     await saveImageData(data, user_id, folder_id)
 
     return res.status(200).json(data)
-  } catch (error: any){
-    console.log(error.message)
+  } catch {
     return res.status(500).json({ message: 'Internal server error' })
   } finally {
-    client.del(`${env.SERVER}-progress-${uuid}`)
+    client.del(`progress-${uuid}`)
   }
 }
 
@@ -41,14 +39,14 @@ const deleteVideo = async (req: Request, res: Response) => {
 const postProgress = async (req: Request, res: Response) => {
   const { progress, uuid } = req.body
 
-  await client.set(`${env.SERVER}-progress_id-${uuid}`, progress, { EX: 60 })
+  await client.set(`progress_id-${uuid}`, progress, { EX: 60 })
 
   res.status(204).send()
 }
 
 const getProgress = async (req: Request, res: Response) => {
   const { uuid } = req.params
-  const progressRedis = await client.get(`${env.SERVER}-progress_id-${uuid}`)
+  const progressRedis = await client.get(`progress_id-${uuid}`)
 
   if (!progressRedis) {
     return res.status(200).json({ progress: 0 })

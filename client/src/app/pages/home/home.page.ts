@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   IonHeader,
   IonToolbar,
@@ -11,10 +11,12 @@ import {
   IonTextarea,
   IonProgressBar,
   IonFab,
+  IonImg,
+  IonAvatar,
+  IonChip,
 } from '@ionic/angular/standalone';
 import { User } from 'src/app/interfaces/interfaces';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import {
   FormBuilder,
   FormGroup,
@@ -24,7 +26,8 @@ import {
 } from '@angular/forms';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CommonModule } from '@angular/common';
-import { StorageService } from 'src/app/services/storage.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +35,9 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['home.page.scss', '../../app.component.scss'],
   standalone: true,
   imports: [
+    IonChip,
+    IonAvatar,
+    IonImg,
     IonFab,
     IonProgressBar,
     CommonModule,
@@ -46,10 +52,10 @@ import { StorageService } from 'src/app/services/storage.service';
     IonToolbar,
     IonTitle,
     IonContent,
+    RouterLink,
   ],
 })
-export class HomePage implements OnDestroy {
-  private user$: Subscription;
+export class HomePage {
   protected user: User | null = null;
 
   protected form: FormGroup<any> = inject(FormBuilder).group({
@@ -68,12 +74,10 @@ export class HomePage implements OnDestroy {
     private auth: AuthService,
     private storage: StorageService,
     private utils: UtilsService
-  ) {
-    this.user$ = this.auth.getUser().subscribe((user) => (this.user = user));
-  }
+  ) {}
 
-  ngOnDestroy(): void {
-    this.user$.unsubscribe();
+  ionViewWillEnter() {
+    this.user = this.auth.user;
   }
 
   protected verifyForm() {
@@ -82,8 +86,7 @@ export class HomePage implements OnDestroy {
 
   private updateProgressBar(uuid: string) {
     this.showProgressBar = true;
-    this.storage.getProgress(uuid).subscribe((data) => {
-      this.utils.dimisLoading();
+    this.storage.getProgress(uuid).subscribe(async (data) => {
       const progress = data.progress / 100;
       this.buffer = progress + 0.05;
       this.progress = progress;
@@ -101,19 +104,14 @@ export class HomePage implements OnDestroy {
     event.preventDefault();
 
     if (this.form.invalid) {
-      this.utils.showToast({
+      await this.utils.showToast({
         color: 'warning',
-        message: 'Please select/recorder a video.',
+        message: 'Por favor, selecione ou grave um vídeo.',
       });
       return;
     }
 
     this.showSubmit = false;
-
-    this.utils.showToast({
-      message: 'Iniciando upload...',
-      color: 'primary',
-    });
 
     const uuid: string = crypto.randomUUID();
 
@@ -127,20 +125,30 @@ export class HomePage implements OnDestroy {
     );
 
     this.storage.uploadVideo(formData).subscribe(
-      (data) => {
+      async (data) => {
         this.clearInterval();
-        this.utils.showToast({
+        await this.utils.showToast({
           message: `Video enviado com sucesso`,
           color: 'success',
-          duration: 15000,
+          duration: 10000,
+          buttons: [
+            {
+              text: 'Abrir',
+              handler: () => {
+                window.open(data.url, '_blank');
+              },
+            },
+          ],
         });
 
         this.message[0] = `Video enviado com sucesso`;
         this.message[1] = data.url;
+
+        this.form.reset();
       },
-      (error) => {
+      async () => {
         this.clearInterval();
-        this.utils.showToast({
+        await this.utils.showToast({
           message: 'Erro ao enviar o video',
           color: 'danger',
           duration: 5000,
@@ -156,6 +164,7 @@ export class HomePage implements OnDestroy {
         message: 'Logout successfully',
       });
 
+      this.auth.user = null;
       this.utils.navigate('/login');
     });
   }

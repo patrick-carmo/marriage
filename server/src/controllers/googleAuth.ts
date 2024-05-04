@@ -1,10 +1,11 @@
 import passport from '../services/googleAuth'
 import { Request, Response } from 'express'
+import env from '../config/envConfig'
 
 const googleAuth = passport.authenticate('google', { scope: ['profile', 'email'] })
 
 const callback = passport.authenticate('google', {
-  successRedirect: '/',
+  successRedirect: env.SERVER,
   failureRedirect: '/api/auth/google/failure',
 })
 

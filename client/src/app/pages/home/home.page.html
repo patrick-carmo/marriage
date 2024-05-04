@@ -1,10 +1,17 @@
 <ion-content [fullscreen]="true">
   <div class="container">
     <div id="login-container">
-      <ion-title size="large" class="ion-padding">Hello {{user ? user.name : 'user'}}</ion-title>
+      @if(user){
+      <div class="flex-center">
+        <ion-avatar>
+          <img alt="{{user.name}}" src="{{user.picture}}" />
+        </ion-avatar>
+        <ion-title>Olá {{user.name}}</ion-title>
+      </div>
+      }
 
       <form [formGroup]="form" (submit)="sendVideo($event)" id="form">
-        <ion-input type="file" name="data" accept="video/*" required formControlName="data" id="data" id="data" hidden (ionChange)="verifyForm()"></ion-input>
+        <input type="file" name="data" accept="video/*" capture required formControlName="data" id="data" id="data" hidden (change)="verifyForm()">
 
         @if(showSubmit){
         <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
@@ -17,6 +24,7 @@
       <p *ngIf="message.length > 1">{{message[0]}} Link: <a [href]="message[1]" target="_blank">{{message[1]}}</a></p>
 
       <ion-button (click)="logout()" size="small">Logout</ion-button>
+      <ion-button [routerLink]="['/login']" routerLinkActive="router-link-active">Página login</ion-button>
     </div>
   </div>
 </ion-content>

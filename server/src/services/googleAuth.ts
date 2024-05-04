@@ -21,7 +21,7 @@ passport.use(
       if (!foundUser) {
         const user = await knex<User>('users').insert(newUserData).returning('*')
 
-        await client.set(`${env.SERVER}-${id}`, JSON.stringify(user[0]), {
+        await client.set(id, JSON.stringify(user[0]), {
           EX: 3600 * 24,
         })
 
@@ -30,7 +30,7 @@ passport.use(
 
       const user = await knex<User>('users').where({ google_id: id }).update(newUserData).returning('*')
 
-      await client.set(`${env.SERVER}-${id}`, JSON.stringify(user[0]), {
+      await client.set(id, JSON.stringify(user[0]), {
         EX: 3600 * 24,
       })
 
