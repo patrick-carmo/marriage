@@ -8,9 +8,6 @@ import {
   IonToolbar,
   IonButton,
 } from '@ionic/angular/standalone';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { Subscription } from 'rxjs';
-import { UtilsService } from 'src/app/services/utils.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -31,8 +28,8 @@ import { RouterLink } from '@angular/router';
 })
 export class LoginPage implements OnInit {
   protected loginUrl = import.meta.env['NG_APP_URL']
-    ? `${import.meta.env['NG_APP_URL']}/api/auth/google`
-    : '/api/auth/google';
+    ? `${import.meta.env['NG_APP_URL']}/api/auth/login`
+    : '/api/auth/login';
 
   constructor() {}
 

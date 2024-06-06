@@ -158,14 +158,21 @@ export class HomePage {
   }
 
   logout() {
-    this.auth.logout().subscribe(() => {
-      this.utils.showToast({
-        color: 'success',
-        message: 'Logout successfully',
-      });
+    this.auth.logout().subscribe(
+      async () => {
+        await this.utils.showToast({
+          color: 'success',
+          message: 'Logout successfully',
+        });
 
-      this.auth.user = null;
-      this.utils.navigate('/login');
-    });
+        this.auth.user = null;
+        this.utils.navigate('/login');
+      },
+      async () =>
+        await this.utils.showToast({
+          color: 'danger',
+          message: 'Logout failed',
+        })
+    );
   }
 }

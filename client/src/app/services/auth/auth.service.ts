@@ -32,14 +32,12 @@ export class AuthService implements OnDestroy {
   }
 
   logout() {
-    return this.http
-      .get(`${this.apiUrl}/api/logout`)
-      .pipe(catchError((error) => of(error)));
+    return this.http.get(`${this.apiUrl}/api/auth/logout`);
   }
 
   getProfile() {
     return this.http
-      .get<User>(`${this.apiUrl}/api/profile`)
+      .get<User>(`${this.apiUrl}/api/user/profile`)
       .pipe(catchError(() => of(null)));
   }
 }
