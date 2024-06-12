@@ -4,9 +4,10 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
-import { User } from './user.entity';
-import { DataFolder } from './dataFolder.entity';
+import { User } from '../user/user.entity';
+import { DataFolder } from '../dataFolder/data-folder.entity';
 
 @Entity()
 export class Video {
@@ -20,10 +21,12 @@ export class Video {
   url: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  userId: User;
+  @JoinColumn({ name: 'userId' })
+  userId: number;
 
   @ManyToOne(() => DataFolder, (folder) => folder.id)
-  dataFolder: DataFolder;
+  @JoinColumn({ name: 'dataFolderId' })
+  dataFolderId: number;
 
   @CreateDateColumn()
   createdAt: Date;

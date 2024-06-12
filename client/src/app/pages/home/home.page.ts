@@ -59,9 +59,8 @@ export class HomePage {
   protected user: User | null = null;
 
   protected form: FormGroup<any> = inject(FormBuilder).group({
-    data: ['', Validators.required],
+    video: ['', Validators.required],
   });
-  private progressInterval: any;
 
   protected buffer: number = 0.1;
   protected progress: number = 0;
@@ -84,21 +83,21 @@ export class HomePage {
     this.showSubmit = this.form.valid;
   }
 
-  private updateProgressBar(uuid: string) {
-    this.showProgressBar = true;
-    this.storage.getProgress(uuid).subscribe(async (data) => {
-      const progress = data.progress / 100;
-      this.buffer = progress + 0.05;
-      this.progress = progress;
-    });
-  }
+  // private updateProgressBar(uuid: string) {
+  //   this.showProgressBar = true;
+  //   this.storage.getProgress(uuid).subscribe(async (data) => {
+  //     const progress = data.progress / 100;
+  //     this.buffer = progress + 0.05;
+  //     this.progress = progress;
+  //   });
+  // }
 
-  private clearInterval() {
-    this.buffer = 0.05;
-    this.progress = 0;
-    this.showProgressBar = false;
-    clearInterval(this.progressInterval);
-  }
+  // private clearInterval() {
+  //   this.buffer = 0.05;
+  //   this.progress = 0;
+  //   this.showProgressBar = false;
+  //   clearInterval(this.progressInterval);
+  // }
 
   async sendVideo(event: Event) {
     event.preventDefault();
@@ -119,14 +118,15 @@ export class HomePage {
     const formData = new FormData(form);
     formData.append('uuid', uuid);
 
-    this.progressInterval = setInterval(
-      () => this.updateProgressBar(uuid),
-      2000
-    );
+    await this.utils.showToast({
+      message: 'Enviando video...',
+      color: 'primary',
+      duration: 10000,
+    });
 
     this.storage.uploadVideo(formData).subscribe(
       async (data) => {
-        this.clearInterval();
+        // this.clearInterval();
         await this.utils.showToast({
           message: `Video enviado com sucesso`,
           color: 'success',
@@ -146,8 +146,9 @@ export class HomePage {
 
         this.form.reset();
       },
-      async () => {
-        this.clearInterval();
+      async (error: any) => {
+        console.error(error);
+        // this.clearInterval();
         await this.utils.showToast({
           message: 'Erro ao enviar o video',
           color: 'danger',

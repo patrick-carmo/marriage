@@ -5,14 +5,17 @@ import {
   Get,
   ParseFilePipe,
   Post,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DriveService } from './drive.service';
-import { GoogleAuthGuard } from 'src/auth/guards/googleAuth.guard';
+import { GoogleAuthGuard } from 'src/auth/guards/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { DriveUploadDto } from './dto/driveUpload.dto';
+import { DriveUploadDto } from './dto/drive-upload.dto';
+import { Request } from 'express';
+import { User } from 'src/user/user.entity';
 
 @UseGuards(GoogleAuthGuard)
 @Controller('drive')
@@ -30,12 +33,11 @@ export class DriveController {
     video: Express.Multer.File,
     @Body()
     { uuid }: DriveUploadDto,
+    @Req() req: Request,
   ) {
-    const folderId =
-      (await this.driveService.searchFolderByName('videos')) ||
-      (await this.driveService.createFolder('videos'));
+    const user = req.user as User;
 
-    return await this.driveService.uploadVideo(uuid, video, folderId);
+    return this.driveService.uploadOperation(user, uuid, video);
   }
 
   @Get('delete')

@@ -10,16 +10,13 @@ export class StorageService {
   constructor(private http: HttpClient) {}
 
   uploadVideo(data: FormData) {
-    return this.http.post<uploadResponse>(`${this.apiUrl}/api/upload`, data);
-  }
-
-  getProgress(uuid: string) {
-    return this.http.get<{ progress: number }>(
-      `${this.apiUrl}/api/progress/${uuid}`
+    return this.http.post<uploadResponse>(
+      `${this.apiUrl}/api/drive/upload`,
+      data
     );
   }
 
   deleteVideo(id: string) {
-    return this.http.delete(`${this.apiUrl}/api/delete/${id}`);
+    return this.http.delete(`${this.apiUrl}/api/drive/delete/${id}`);
   }
 }

@@ -11,7 +11,7 @@
       }
 
       <form [formGroup]="form" (submit)="sendVideo($event)" id="form">
-        <input type="file" name="data" accept="video/*" capture required formControlName="data" id="data" id="data" hidden (change)="verifyForm()">
+        <input type="file" name="video" accept="video/*" capture required formControlName="video" id="video" hidden (change)="verifyForm()">
 
         @if(showSubmit){
         <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>

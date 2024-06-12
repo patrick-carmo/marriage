@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { GoogleGuard } from './guards/google.guard';
-import { GoogleAuthGuard } from './guards/googleAuth.guard';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { AuthService } from './auth.service';
-import { User } from 'src/entities/user.entity';
+import { User } from 'src/user/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +29,7 @@ export class AuthController {
 
     await this.authService.handleGoogleAuth(user);
 
-    return res.redirect('/');
+    return res.redirect('http://localhost:8100');
   }
 
   @Get('logout')

@@ -11,9 +11,7 @@ import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import {
   HTTP_INTERCEPTORS,
-  HttpClientModule,
   provideHttpClient,
-  withInterceptors,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { InterceptorService } from './app/services/interceptor.service';

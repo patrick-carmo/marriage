@@ -2,12 +2,21 @@ import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { drive_v3, google } from 'googleapis';
 import * as fs from 'fs';
 import { DriveGateway } from './drive.gateway';
+import { User } from 'src/user/user.entity';
+import { VideoService } from 'src/video/video.service';
+import { DataFolderService } from 'src/dataFolder/data-folder.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class DriveService implements OnModuleInit {
   private service: drive_v3.Drive;
 
-  constructor(private readonly driveGateway: DriveGateway) {}
+  constructor(
+    private readonly driveGateway: DriveGateway,
+    private readonly dataFolderService: DataFolderService,
+    private readonly videoService: VideoService,
+    private readonly userService: UserService,
+  ) {}
 
   async onModuleInit() {
     const auth = new google.auth.JWT(
@@ -21,7 +30,31 @@ export class DriveService implements OnModuleInit {
     this.service = google.drive({ version: 'v3', auth });
   }
 
-  async searchFolderByName(name: string): Promise<string | null> {
+  async uploadOperation(user: User, uuid: string, video: Express.Multer.File) {
+    const dbUser = await this.userService.find(user);
+
+    const dataFolder =
+      (await this.dataFolderService.find(dbUser)) ||
+      (await this.dataFolderService.create({
+        userId: dbUser.id,
+        folderId: await this.createFolder(user.name),
+      }));
+
+    const folderId = dataFolder.folderId;
+
+    const image = await this.uploadVideo(uuid, video, folderId);
+
+    await this.videoService.create({
+      userId: dbUser.id,
+      videoId: image.videoId,
+      dataFolderId: dataFolder.id,
+      url: image.url,
+    });
+
+    return image;
+  }
+
+  async searchFolderByName(name: string) {
     const file = await this.service.files.list({
       q: `name = '${name}' and '${process.env.DRIVE_FOLDER}' in parents`,
       fields: 'files(id)',
@@ -34,7 +67,7 @@ export class DriveService implements OnModuleInit {
     return file.data.files[0].id;
   }
 
-  async searchFolder(folderId: string): Promise<string | null> {
+  async searchFolder(folderId: string) {
     const file = await this.service.files.get({
       fileId: folderId,
       fields: 'id',

@@ -4,8 +4,9 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class DataFolder {
@@ -18,7 +19,8 @@ export class DataFolder {
   folderId: string;
 
   @ManyToOne(() => User, (user) => user.id)
-  userId: User;
+  @JoinColumn({ name: 'userId' })
+  userId: number;
 
   @CreateDateColumn()
   createdAt: Date;

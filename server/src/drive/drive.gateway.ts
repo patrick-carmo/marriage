@@ -17,12 +17,10 @@ export class DriveGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('progress')
   handleMessage(@MessageBody() body: any, @ConnectedSocket() socket: Socket) {
     console.log({ client: socket.id, body });
-
-    socket.join(body);
   }
 
   emitProgress(uuid: string, progress: number) {
-    this.server.to(uuid).emit('progress', { progress });
+    this.server.emit('progress', { uuid, progress });
   }
 
   handleConnection(client: Socket) {

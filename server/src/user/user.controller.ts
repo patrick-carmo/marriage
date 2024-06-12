@@ -1,8 +1,8 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from 'src/entities/user.entity';
 import { Request } from 'express';
-import { GoogleAuthGuard } from 'src/auth/guards/googleAuth.guard';
+import { GoogleAuthGuard } from 'src/auth/guards/google-auth.guard';
+import { User } from './user.entity';
 
 @Controller('user')
 export class UserController {
