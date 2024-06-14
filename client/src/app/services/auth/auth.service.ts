@@ -11,7 +11,7 @@ export class AuthService implements OnDestroy {
   private userSub$: Subscription | null = null;
   private userData: User | null = null;
 
-  apiUrl = import.meta.env['NG_APP_URL'] ?? '';
+  apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
 
   constructor(private http: HttpClient) {
     this.userSub$ = this.user$.subscribe((user) => {

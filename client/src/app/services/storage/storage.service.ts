@@ -6,7 +6,7 @@ import { uploadResponse } from '../../interfaces/interfaces';
   providedIn: 'root',
 })
 export class StorageService {
-  apiUrl = import.meta.env['NG_APP_URL'] ?? '';
+  apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
   constructor(private http: HttpClient) {}
 
   uploadVideo(data: FormData) {

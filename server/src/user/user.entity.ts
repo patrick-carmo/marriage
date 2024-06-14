@@ -10,9 +10,7 @@ import {
   name: 'users',
 })
 export class User {
-  @PrimaryGeneratedColumn({
-    unsigned: true,
-  })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })

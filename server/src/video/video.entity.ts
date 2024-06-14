@@ -22,11 +22,11 @@ export class Video {
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'userId' })
-  userId: number;
+  user: User;
 
   @ManyToOne(() => DataFolder, (folder) => folder.id)
   @JoinColumn({ name: 'dataFolderId' })
-  dataFolderId: number;
+  dataFolder: DataFolder;
 
   @CreateDateColumn()
   createdAt: Date;

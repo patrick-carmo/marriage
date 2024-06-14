@@ -46,7 +46,7 @@ export class UtilsService {
     }
   }
 
-  navigate(path: string) {
-    this.router.navigate([path]);
+  async navigate(path: string) {
+    return this.router.navigate([path]);
   }
 }

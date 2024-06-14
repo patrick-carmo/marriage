@@ -15,16 +15,13 @@
 
         @if(showSubmit){
         <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
-        <ion-button type="reset" (click)="showSubmit = !showSubmit">Limpar</ion-button>
+        <ion-button type="reset" (click)="reset()">Limpar</ion-button>
         }
       </form>
 
       <ion-progress-bar *ngIf="showProgressBar" [buffer]="buffer" [value]="progress"></ion-progress-bar>
 
-      <p *ngIf="message.length > 1">{{message[0]}} Link: <a [href]="message[1]" target="_blank">{{message[1]}}</a></p>
-
       <ion-button (click)="logout()" size="small">Logout</ion-button>
-      <ion-button [routerLink]="['/login']" routerLinkActive="router-link-active">Página login</ion-button>
     </div>
   </div>
 </ion-content>

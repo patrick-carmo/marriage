@@ -36,8 +36,8 @@ export class DriveService implements OnModuleInit {
     const dataFolder =
       (await this.dataFolderService.find(dbUser)) ||
       (await this.dataFolderService.create({
-        userId: dbUser.id,
-        folderId: await this.createFolder(user.name),
+        user: dbUser,
+        folderId: await this.createFolder(dbUser.name),
       }));
 
     const folderId = dataFolder.folderId;
@@ -45,9 +45,9 @@ export class DriveService implements OnModuleInit {
     const image = await this.uploadVideo(uuid, video, folderId);
 
     await this.videoService.create({
-      userId: dbUser.id,
+      user: dbUser,
       videoId: image.videoId,
-      dataFolderId: dataFolder.id,
+      dataFolder,
       url: image.url,
     });
 

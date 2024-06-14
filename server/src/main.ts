@@ -13,7 +13,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: 'http://localhost:8100',
+    origin: process.env.CLIENT,
     credentials: true,
   });
 
@@ -34,6 +34,6 @@ async function bootstrap() {
 
   app.use(passport.initialize());
   app.use(passport.session());
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

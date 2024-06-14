@@ -27,8 +27,8 @@ import { RouterLink } from '@angular/router';
   ],
 })
 export class LoginPage implements OnInit {
-  protected loginUrl = import.meta.env['NG_APP_URL']
-    ? `${import.meta.env['NG_APP_URL']}/api/auth/login`
+  protected loginUrl = import.meta.env['NG_APP_SERVER']
+    ? `${import.meta.env['NG_APP_SERVER']}/api/auth/login`
     : '/api/auth/login';
 
   constructor() {}

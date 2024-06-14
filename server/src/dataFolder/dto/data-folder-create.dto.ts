@@ -1,9 +1,9 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
+import { User } from 'src/user/user.entity';
 
 export class CreateDataFolderDto {
   @IsString()
   folderId: string;
 
-  @IsNumber()
-  userId: number;
+  user: Pick<User, 'id'>;
 }

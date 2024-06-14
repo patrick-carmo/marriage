@@ -1,4 +1,6 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString, ValidateNested } from 'class-validator';
+import { DataFolder } from 'src/dataFolder/data-folder.entity';
+import { User } from 'src/user/user.entity';
 
 export class CreateVideoDto {
   @IsString()
@@ -7,9 +9,9 @@ export class CreateVideoDto {
   @IsString()
   url: string;
 
-  @IsNumber()
-  userId: number;
+  @ValidateNested()
+  user: User;
 
-  @IsNumber()
-  dataFolderId: number;
+  @ValidateNested()
+  dataFolder: DataFolder;
 }

@@ -1,33 +1,35 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 
+import 'dotenv/config';
+
 import { Socket, Server } from 'socket.io';
 
-@WebSocketGateway()
-export class DriveGateway implements OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway({
+  cors: {
+    origin: process.env.CLIENT,
+    credentials: true,
+  },
+})
+export class DriveGateway {
   @WebSocketServer() private readonly server: Server;
 
-  @SubscribeMessage('progress')
-  handleMessage(@MessageBody() body: any, @ConnectedSocket() socket: Socket) {
-    console.log({ client: socket.id, body });
+  @SubscribeMessage('join')
+  handleJoin(@MessageBody() uuid: string, @ConnectedSocket() socket: Socket) {
+    socket.join(uuid);
+  }
+
+  @SubscribeMessage('leave')
+  handleLeave(@MessageBody() uuid: string, @ConnectedSocket() socket: Socket) {
+    socket.leave(uuid);
   }
 
   emitProgress(uuid: string, progress: number) {
-    this.server.emit('progress', { uuid, progress });
-  }
-
-  handleConnection(client: Socket) {
-    console.log('Client connected: ', client.id);
-  }
-
-  handleDisconnect(client: Socket) {
-    console.log('Client disconnected: ', client.id);
+    this.server.to(uuid).emit('progress', progress);
   }
 }

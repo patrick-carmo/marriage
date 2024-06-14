@@ -7,8 +7,7 @@ import { UtilsService } from './utils.service';
 export class ErrorHandlerService implements ErrorHandler {
   constructor(private utils: UtilsService) {}
 
-  async handleError(error: any) {
-    console.log(error);
+  async handleError() {
     await this.utils.dimisLoading();
 
     await this.utils.showToast({

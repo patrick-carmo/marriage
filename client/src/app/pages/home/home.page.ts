@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import {
   IonHeader,
   IonToolbar,
@@ -28,6 +28,8 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { CommonModule } from '@angular/common';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { RouterLink } from '@angular/router';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -55,7 +57,7 @@ import { RouterLink } from '@angular/router';
     RouterLink,
   ],
 })
-export class HomePage {
+export class HomePage implements OnDestroy {
   protected user: User | null = null;
 
   protected form: FormGroup<any> = inject(FormBuilder).group({
@@ -64,43 +66,34 @@ export class HomePage {
 
   protected buffer: number = 0.1;
   protected progress: number = 0;
+  private progressSub: Subscription | undefined;
   protected showProgressBar: boolean = false;
 
   protected showSubmit: Boolean = false;
-  protected message: string[] = [];
 
   constructor(
     private auth: AuthService,
     private storage: StorageService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private socket: WebsocketService
   ) {}
 
   ionViewWillEnter() {
     this.user = this.auth.user;
   }
 
+  ngOnDestroy() {
+    this.progressSub?.unsubscribe();
+    this.socket.disconnect();
+  }
+
   protected verifyForm() {
     this.showSubmit = this.form.valid;
   }
 
-  // private updateProgressBar(uuid: string) {
-  //   this.showProgressBar = true;
-  //   this.storage.getProgress(uuid).subscribe(async (data) => {
-  //     const progress = data.progress / 100;
-  //     this.buffer = progress + 0.05;
-  //     this.progress = progress;
-  //   });
-  // }
-
-  // private clearInterval() {
-  //   this.buffer = 0.05;
-  //   this.progress = 0;
-  //   this.showProgressBar = false;
-  //   clearInterval(this.progressInterval);
-  // }
-
   async sendVideo(event: Event) {
     event.preventDefault();
+    this.showProgressBar = true;
 
     if (this.form.invalid) {
       await this.utils.showToast({
@@ -118,19 +111,14 @@ export class HomePage {
     const formData = new FormData(form);
     formData.append('uuid', uuid);
 
-    await this.utils.showToast({
-      message: 'Enviando video...',
-      color: 'primary',
-      duration: 10000,
-    });
+    this.setupSocket(uuid);
 
     this.storage.uploadVideo(formData).subscribe(
       async (data) => {
-        // this.clearInterval();
         await this.utils.showToast({
           message: `Video enviado com sucesso`,
           color: 'success',
-          duration: 10000,
+          duration: 30000,
           buttons: [
             {
               text: 'Abrir',
@@ -140,22 +128,29 @@ export class HomePage {
             },
           ],
         });
-
-        this.message[0] = `Video enviado com sucesso`;
-        this.message[1] = data.url;
-
-        this.form.reset();
       },
-      async (error: any) => {
-        console.error(error);
-        // this.clearInterval();
+      async () => {
         await this.utils.showToast({
           message: 'Erro ao enviar o video',
           color: 'danger',
           duration: 5000,
         });
+        this.reset();
+      },
+      () => {
+        this.reset();
       }
     );
+  }
+
+  private setupSocket(uuid: string) {
+    this.socket.connect();
+    this.socket.emit('join', uuid);
+
+    this.socket.progress().subscribe((data: any) => {
+      this.buffer = data / 100 + 0.05;
+      this.progress = data / 100;
+    });
   }
 
   logout() {
@@ -167,6 +162,7 @@ export class HomePage {
         });
 
         this.auth.user = null;
+        this.reset();
         this.utils.navigate('/login');
       },
       async () =>
@@ -175,5 +171,17 @@ export class HomePage {
           message: 'Logout failed',
         })
     );
+  }
+
+  reset() {
+    this.showSubmit = false;
+    this.form.reset();
+
+    this.buffer = 0.1;
+    this.progress = 0;
+    this.showProgressBar = false;
+
+    this.progressSub?.unsubscribe();
+    this.socket.disconnect();
   }
 }

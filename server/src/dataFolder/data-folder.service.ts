@@ -13,7 +13,11 @@ export class DataFolderService {
   ) {}
 
   async find(user: User) {
-    return this.dataFolderRepository.findOneBy({ userId: user.id });
+    return this.dataFolderRepository.findOneBy({
+      user: {
+        id: user.id,
+      },
+    });
   }
 
   async findAll() {
