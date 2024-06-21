@@ -29,7 +29,11 @@ export class AuthController {
 
     await this.authService.handleGoogleAuth(user);
 
-    return res.redirect('http://localhost:8100');
+    return res.redirect(
+      process.env.ENV === 'production'
+        ? '/marriage/recorder'
+        : `${process.env.CLIENT}/marriage/recorder`,
+    );
   }
 
   @Get('logout')

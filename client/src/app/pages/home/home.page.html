@@ -1,27 +1,21 @@
 <ion-content [fullscreen]="true">
-  <div class="container">
-    <div id="login-container">
-      @if(user){
-      <div class="flex-center">
-        <ion-avatar>
-          <img alt="{{user.name}}" src="{{user.picture}}" />
-        </ion-avatar>
-        <ion-title>Olá {{user.name}}</ion-title>
-      </div>
-      }
-
-      <form [formGroup]="form" (submit)="sendVideo($event)" id="form">
-        <input type="file" name="video" accept="video/*" capture required formControlName="video" id="video" hidden (change)="verifyForm()">
-
-        @if(showSubmit){
-        <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
-        <ion-button type="reset" (click)="reset()">Limpar</ion-button>
-        }
-      </form>
-
-      <ion-progress-bar *ngIf="showProgressBar" [buffer]="buffer" [value]="progress"></ion-progress-bar>
-
-      <ion-button (click)="logout()" size="small">Logout</ion-button>
+  <div class="flex-center">
+    <div>
+      <swiper-container navigation="true" [pagination]="{clickable: true}" pagination-dynamic-bullets="true" autoplay="true" keyboard="true" [zoom]="true" effect="fade">
+        <swiper-slide *ngFor="let photo of photos" lazy="true">
+          <img src="{{photo}}" loading="lazy" />
+        </swiper-slide>
+      </swiper-container>
     </div>
+
+    <div *ngIf="!authService.user">
+      <div class="ion-padding flex">
+        <ion-text>
+          Envie um vídeo para a gente
+        </ion-text>
+        <ion-button (click)="loginOrLogout()" shape="round" size="small">clicando aqui.</ion-button>
+      </div>
+    </div>
+
   </div>
 </ion-content>

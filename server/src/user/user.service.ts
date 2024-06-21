@@ -18,11 +18,6 @@ export class UserService {
   }
 
   async update(user: User) {
-    const updatedUser = await this.userRepository.update(
-      { googleId: user.googleId },
-      user,
-    );
-
-    return updatedUser;
+    return this.userRepository.update({ googleId: user.googleId }, user);
   }
 }

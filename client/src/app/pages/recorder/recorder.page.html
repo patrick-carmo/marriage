@@ -1,0 +1,20 @@
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <div id="login-container">
+      <form [formGroup]="form" (submit)="sendVideo($event)" id="form">
+        <label for="video" id="videoText">
+          <ion-icon name="videocam" size="large"></ion-icon>
+          <span>{{fileName ? fileName : 'Selecione um vídeo'}}</span>
+        </label>
+        <input type="file" name="video" accept="video/*" capture required formControlName="video" id="video" hidden (change)="verifyForm($event)">
+
+        @if(showSubmit){
+        <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
+        <ion-button type="reset" (click)="reset()">Limpar</ion-button>
+        }
+      </form>
+
+      <ion-progress-bar *ngIf="showProgressBar" [buffer]="buffer" [value]="progress"></ion-progress-bar>
+    </div>
+  </div>
+</ion-content>

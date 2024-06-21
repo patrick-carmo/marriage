@@ -24,14 +24,7 @@ export class AuthGuardService implements CanActivate {
         return true;
       }
 
-      this.utils.showToast({
-        header: 'Error',
-        message: 'Faça login para acessar esta página.',
-        color: 'warning',
-        duration: 4000,
-      });
-
-      this.utils.navigate('/login');
+      await this.utils.navigate('/home');
       return false;
     }
 
