@@ -3,15 +3,16 @@
     <div id="login-container">
       <form [formGroup]="form" (submit)="sendVideo($event)" id="form">
         <label for="video" id="videoText">
-          <ion-icon name="videocam" size="large"></ion-icon>
-          <span>{{fileName ? fileName : 'Selecione um vídeo'}}</span>
-        </label>
-        <input type="file" name="video" accept="video/*" capture required formControlName="video" id="video" hidden (change)="verifyForm($event)">
+          <ion-icon name="videocam" size="large" *ngIf="!isSending" color="primary"></ion-icon>
 
-        @if(showSubmit){
-        <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
-        <ion-button type="reset" (click)="reset()">Limpar</ion-button>
-        }
+          <p>{{fileName ? fileName : 'Clique aqui para enviar um vídeo'}}</p>
+        </label>
+        <input type="file" name="video" accept="video/*" capture required formControlName="video" id="video" hidden (change)="verifyForm($event)" *ngIf="!isSending">
+
+        <div *ngIf="showSubmit">
+          <ion-button type="submit" *ngIf="showSubmit">Enviar</ion-button>
+          <ion-button type="reset" (click)="reset()">Cancelar</ion-button>
+        </div>
       </form>
 
       <ion-progress-bar *ngIf="showProgressBar" [buffer]="buffer" [value]="progress"></ion-progress-bar>

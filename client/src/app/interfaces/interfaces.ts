@@ -1,9 +1,11 @@
 export interface User {
-  name: string;
+  googleId: string;
+  email: string;
+  name?: string;
   picture: string;
 }
 
-export interface uploadResponse{
-  url: string
-  image_id: string
+export interface uploadResponse {
+  url: string;
+  image_id: string;
 }

@@ -1,4 +1,8 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import {
   IonHeader,
   IonToolbar,
@@ -17,7 +21,6 @@ import {
   IonIcon,
 } from '@ionic/angular/standalone';
 import { User } from 'src/app/interfaces/interfaces';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import {
   FormBuilder,
   FormGroup,
@@ -73,6 +76,9 @@ export class RecorderPage implements OnDestroy {
   private progressSub: Subscription | undefined;
   protected showProgressBar: boolean = false;
 
+  private loadingDimissed: boolean = false;
+
+  protected isSending: Boolean = false;
   protected showSubmit: Boolean = false;
 
   protected fileName: string = '';
@@ -110,7 +116,12 @@ export class RecorderPage implements OnDestroy {
       return;
     }
 
-    this.showSubmit = false;
+    await this.utils.showLoading({
+      message: 'Aguarde. Preparando o envio...',
+      duration: 60000,
+    });
+
+    this.sendingVideo();
 
     const uuid: string = crypto.randomUUID();
 
@@ -143,9 +154,11 @@ export class RecorderPage implements OnDestroy {
           duration: 5000,
         });
         this.reset();
+        await this.utils.dimissLoading();
       },
-      () => {
+      async () => {
         this.reset();
+        await this.utils.dimissLoading();
       }
     );
   }
@@ -155,15 +168,27 @@ export class RecorderPage implements OnDestroy {
     this.socket.emit('join', uuid);
 
     this.socket.progress().subscribe((data: any) => {
-      this.buffer = data / 100 + 0.05;
+      if (data !== 0 && !this.loadingDimissed) {
+        this.utils.dimissLoading();
+        this.loadingDimissed = true;
+      }
+
+      this.buffer = data / 100 + 0.1;
       this.progress = data / 100;
     });
   }
 
+  private sendingVideo(isSending: Boolean = true) {
+    this.showSubmit = !isSending;
+    this.isSending = isSending;
+  }
+
   reset() {
     this.showSubmit = false;
+    this.isSending = false;
+    this.loadingDimissed = false;
     this.form.reset();
-    this.fileName = ''
+    this.fileName = '';
 
     this.buffer = 0.1;
     this.progress = 0;

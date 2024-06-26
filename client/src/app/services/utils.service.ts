@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LoadingController,
+  LoadingOptions,
   ToastController,
   ToastOptions,
 } from '@ionic/angular/standalone';
@@ -18,29 +19,16 @@ export class UtilsService {
   ) {}
 
   async showToast(fields: ToastOptions) {
-    const { header, message, color, buttons, duration } = fields;
-
-    const toast = await this.toast.create({
-      header,
-      message,
-      color,
-      buttons,
-      swipeGesture: 'vertical',
-      duration: duration ?? 2000,
-    });
-
-    await toast.present();
+    const toast = await this.toast.create(fields);
+    return toast.present();
   }
 
-  async showLoading(message: string = 'Enviando...') {
-    this.loading = await this.loadingCtrl.create({
-      message,
-    });
-
-    await this.loading.present();
+  async showLoading(fields: LoadingOptions) {
+    this.loading = await this.loadingCtrl.create(fields);
+    return this.loading.present();
   }
 
-  async dimisLoading() {
+  async dimissLoading() {
     if (this.loading) {
       await this.loading.dismiss();
     }

@@ -18,6 +18,7 @@
         "build": {
           "builder": "@ngx-env/builder:browser",
           "options": {
+            "optimization": { "styles": { "inlineCritical": false } },
             "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -126,9 +127,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
+    "schematicCollections": ["@ionic/angular-toolkit"],
     "analytics": false
   },
   "schematics": {

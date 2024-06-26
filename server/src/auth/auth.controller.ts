@@ -30,9 +30,9 @@ export class AuthController {
     await this.authService.handleGoogleAuth(user);
 
     return res.redirect(
-      process.env.ENV === 'production'
-        ? '/marriage/recorder'
-        : `${process.env.CLIENT}/marriage/recorder`,
+      process.env.ENV === 'development'
+        ? `${process.env.CLIENT}/marriage/recorder`
+        : `/marriage/recorder`,
     );
   }
 
