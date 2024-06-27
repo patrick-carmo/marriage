@@ -9,3 +9,9 @@ export interface uploadResponse {
   url: string;
   image_id: string;
 }
+
+export interface Photos {
+  src: string;
+  title: string;
+  content: string;
+}

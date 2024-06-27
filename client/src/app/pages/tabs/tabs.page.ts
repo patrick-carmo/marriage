@@ -39,13 +39,4 @@ export class TabsPage {
   constructor(protected readonly authService: AuthService) {
     addIcons({ home, videocam });
   }
-
-  loginOrLogout() {
-    if (!this.authService.user) {
-      window.open(this.authService.loginOrLogoutURL, '_self');
-      return;
-    }
-
-    this.authService.logout();
-  }
 }

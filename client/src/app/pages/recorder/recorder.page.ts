@@ -132,26 +132,18 @@ export class RecorderPage implements OnDestroy {
     this.setupSocket(uuid);
 
     this.storage.uploadVideo(formData).subscribe(
-      async (data) => {
+      async () => {
         await this.utils.showToast({
           message: `Video enviado com sucesso`,
           color: 'success',
-          duration: 30000,
-          buttons: [
-            {
-              text: 'Abrir',
-              handler: () => {
-                window.open(data.url, '_blank');
-              },
-            },
-          ],
+          duration: 20000,
         });
       },
       async () => {
         await this.utils.showToast({
           message: 'Erro ao enviar o video',
           color: 'danger',
-          duration: 5000,
+          duration: 10000,
         });
         this.reset();
         await this.utils.dimissLoading();

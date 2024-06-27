@@ -18,13 +18,12 @@ export class AuthGuardService implements CanActivate {
 
     if (!this.user) {
       this.user = await firstValueFrom(this.auth.getProfile());
-
       if (this.user) {
         this.auth.user = this.user;
         return true;
       }
 
-      await this.utils.navigate('/home');
+      await this.utils.navigate('home');
       return false;
     }
 

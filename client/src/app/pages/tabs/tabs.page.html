@@ -1,14 +1,14 @@
-<ion-header *ngIf="authService.user">
+<ion-header>
   <ion-toolbar>
     <div class="flex">
       <ion-chip>
         <ion-avatar>
-          <img alt="{{authService.user.name}}" src="{{authService.user.picture}}" />
+          <img alt="{{authService.user?.name}}" src="{{authService.user?.picture}}" />
         </ion-avatar>
-        <ion-label>{{authService.user.name}}</ion-label>
+        <ion-label>{{authService.user?.name}}</ion-label>
       </ion-chip>
 
-      <ion-button (click)="loginOrLogout()" size="small" shape="round">Logout</ion-button>
+      <ion-button (click)="authService.logout()" size="small" shape="round">Logout</ion-button>
     </div>
   </ion-toolbar>
 </ion-header>

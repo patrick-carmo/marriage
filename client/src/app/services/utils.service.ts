@@ -19,12 +19,26 @@ export class UtilsService {
   ) {}
 
   async showToast(fields: ToastOptions) {
-    const toast = await this.toast.create(fields);
+    const toast = await this.toast.create({
+      ...fields,
+      duration: fields.duration ?? 2000,
+      buttons: [
+        ...(fields.buttons ?? []),
+        {
+          text: 'Fechar',
+          role: 'cancel',
+        },
+      ],
+      swipeGesture: fields.swipeGesture ?? 'vertical',
+    });
     return toast.present();
   }
 
   async showLoading(fields: LoadingOptions) {
-    this.loading = await this.loadingCtrl.create(fields);
+    this.loading = await this.loadingCtrl.create({
+      ...fields,
+      duration: fields.duration ?? 60000,
+    });
     return this.loading.present();
   }
 

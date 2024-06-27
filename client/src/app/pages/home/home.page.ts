@@ -1,22 +1,45 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import {
+  AfterViewInit,
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { register } from 'swiper/element/bundle';
-import { HomeComponent } from 'src/app/components/home/home.component';
+import {
+  IonContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonButton,
+  IonCardContent,
+  IonCard,
+} from '@ionic/angular/standalone';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+
+import { Photos } from 'src/app/interfaces/interfaces';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [HomeComponent],
+  imports: [
+    IonContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonButton,
+    IonCardContent,
+    CommonModule,
+    IonCard,
+    RouterLink,
+    NgOptimizedImage,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePage implements OnInit {
-  photos: any[] = [];
+  photos: Photos[] = [];
 
-  constructor(readonly authService: AuthService) {
-    register();
-  }
+  constructor(readonly authService: AuthService) {}
 
   ngOnInit() {
     this.photos = [
@@ -38,5 +61,16 @@ export class HomePage implements OnInit {
         content: 'O casamento será em 2021. Estamos muito felizes e ansiosos.',
       },
     ];
+
+    const cardTitle = document.getElementById('title');
+
+    if (cardTitle) {
+      if (this.authService.user) cardTitle.style.paddingTop = '90px';
+      else cardTitle.style.paddingTop = '';
+    }
+  }
+
+  login() {
+    window.open(this.authService.loginURL, '_self');
   }
 }
