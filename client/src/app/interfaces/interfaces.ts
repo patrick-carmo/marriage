@@ -5,9 +5,14 @@ export interface User {
   picture: string;
 }
 
-export interface uploadResponse {
+export interface uploadVideoResponse {
   url: string;
-  image_id: string;
+  videoId: string;
+}
+
+export interface uploadPhotoResponse {
+  url: string;
+  photoId: string;
 }
 
 export interface Photos {

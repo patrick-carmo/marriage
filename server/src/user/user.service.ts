@@ -10,7 +10,11 @@ export class UserService {
   ) {}
 
   async find(user: User) {
-    return this.userRepository.findOneBy({ googleId: user.googleId });
+    return this.userRepository.findOneBy({ id: user.id });
+  }
+
+  async findByGoogle(user: User) {
+    return this.userRepository.findOneBy({ google_id: user.google_id });
   }
 
   async create(user: User) {
@@ -18,6 +22,6 @@ export class UserService {
   }
 
   async update(user: User) {
-    return this.userRepository.update({ googleId: user.googleId }, user);
+    return this.userRepository.update({ google_id: user.google_id }, user);
   }
 }

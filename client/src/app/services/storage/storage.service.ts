@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { uploadResponse } from '../../interfaces/interfaces';
+import { uploadVideoResponse } from '../../interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +10,8 @@ export class StorageService {
   constructor(private http: HttpClient) {}
 
   uploadVideo(data: FormData) {
-    return this.http.post<uploadResponse>(
-      `${this.apiUrl}/api/drive/upload`,
+    return this.http.post<uploadVideoResponse>(
+      `${this.apiUrl}/api/drive/upload/video`,
       data
     );
   }

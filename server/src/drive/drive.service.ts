@@ -4,8 +4,10 @@ import * as fs from 'fs';
 import { DriveGateway } from './drive.gateway';
 import { User } from 'src/user/user.entity';
 import { VideoService } from 'src/video/video.service';
-import { DataFolderService } from 'src/dataFolder/data-folder.service';
+import { FolderService } from 'src/folder/folder.service';
 import { UserService } from 'src/user/user.service';
+import { FolderType } from 'src/folder/enum/folderType';
+import { Folder } from 'src/folder/folder.entity';
 
 @Injectable()
 export class DriveService implements OnModuleInit {
@@ -13,7 +15,7 @@ export class DriveService implements OnModuleInit {
 
   constructor(
     private readonly driveGateway: DriveGateway,
-    private readonly dataFolderService: DataFolderService,
+    private readonly folderService: FolderService,
     private readonly videoService: VideoService,
     private readonly userService: UserService,
   ) {}
@@ -30,60 +32,66 @@ export class DriveService implements OnModuleInit {
     this.service = google.drive({ version: 'v3', auth });
   }
 
-  async uploadOperation(user: User, uuid: string, video: Express.Multer.File) {
-    const dbUser = await this.userService.find(user);
+  async videoUpload(user: User, uuid: string, video: Express.Multer.File) {
+    const dbUser = await this.userService.findByGoogle(user);
 
-    const dataFolder =
-      (await this.dataFolderService.find(dbUser)) ||
-      (await this.dataFolderService.create({
-        user: dbUser,
-        folderId: await this.createFolder(dbUser.name),
-      }));
-
-    const folderId = dataFolder.folderId;
-
-    const image = await this.uploadVideo(uuid, video, folderId);
+    const { uploadData, folder } = await this.uploadOperation(
+      dbUser,
+      uuid,
+      video,
+      FolderType.Video,
+    );
 
     await this.videoService.create({
       user: dbUser,
-      videoId: image.videoId,
-      dataFolder,
-      url: image.url,
+      video_id: uploadData.videoId,
+      folder,
+      url: uploadData.url,
     });
 
-    return image;
+    return uploadData;
   }
 
-  async searchFolderByName(name: string) {
-    const file = await this.service.files.list({
-      q: `name = '${name}' and '${process.env.DRIVE_FOLDER}' in parents`,
-      fields: 'files(id)',
+  private async uploadOperation(
+    user: User,
+    uuid: string,
+    file: Express.Multer.File,
+    folderType: FolderType,
+  ) {
+    const userFolder = await this.getFolder(user, FolderType.User);
+    const folder = await this.getFolder(user, folderType, userFolder);
+
+    const uploadData = await this.uploadFile(uuid, file, folder.folder_id);
+
+    return { uploadData, folder };
+  }
+
+  private async getFolder(
+    user: User,
+    folder_type: FolderType,
+    parent_folder?: Folder,
+  ) {
+    const folderExists = await this.folderService.findFolder(user, folder_type);
+
+    if (folderExists) return folderExists;
+
+    const createdFolder = await this.folderService.create({
+      user,
+      folder_id: await this.createFolder(
+        parent_folder ? folder_type : user.name,
+        parent_folder?.folder_id,
+      ),
+      folder_type,
+      parent_folder,
     });
 
-    if (!file.data.files || !file.data.files.length) {
-      return null;
-    }
-
-    return file.data.files[0].id;
+    return createdFolder;
   }
 
-  async searchFolder(folderId: string) {
-    const file = await this.service.files.get({
-      fileId: folderId,
-      fields: 'id',
-    });
-
-    if (!file.data.id) {
-      return null;
-    }
-
-    return file.data.id;
-  }
-
-  async createFolder(name: string) {
+  private async createFolder(name: string, folderId?: string) {
     const fileMetaData = {
       name,
-      parents: [process.env.DRIVE_FOLDER],
+      parents: [folderId ?? process.env.DRIVE_FOLDER],
       mimeType: process.env.DRIVE_MIMETYPE,
     };
 
@@ -99,12 +107,12 @@ export class DriveService implements OnModuleInit {
     return file.data.id;
   }
 
-  async uploadVideo(
+  private async uploadFile(
     uuid: string,
-    video: Express.Multer.File,
+    file: Express.Multer.File,
     folderId: string,
   ) {
-    const { path, mimetype: mimeType, originalname: name } = video;
+    const { path, mimetype: mimeType, originalname: name } = file;
 
     const requestBody = {
       name,
@@ -116,7 +124,7 @@ export class DriveService implements OnModuleInit {
       body: fs.createReadStream(path),
     };
 
-    const file = await this.service.files.create(
+    const response = await this.service.files.create(
       {
         requestBody,
         media,
@@ -124,25 +132,27 @@ export class DriveService implements OnModuleInit {
       },
       {
         onUploadProgress: (event) => {
-          const progress = Math.round((event.bytesRead / video.size) * 100);
+          const progress = Math.round((event.bytesRead / file.size) * 100);
 
           this.driveGateway.emitProgress(uuid, progress);
         },
       },
     );
 
-    const { id: videoId } = file.data;
+    const type = mimeType.split('/')[0] + 'Id';
 
-    if (!videoId) {
+    const { id } = response.data;
+
+    if (!id) {
       throw new BadRequestException('Error uploading file');
     }
 
-    const image = {
-      videoId,
-      url: `https://drive.google.com/file/d/${videoId}/preview`,
+    const data = {
+      [type]: id,
+      url: `https://drive.google.com/file/d/${type}/preview`,
     };
 
-    return image;
+    return data;
   }
 
   deleteFile = async (fileId: string) => {

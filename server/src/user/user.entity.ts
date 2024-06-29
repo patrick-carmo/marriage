@@ -5,16 +5,17 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
+import { Role } from '../enums/role.enum';
 
 @Entity({
   name: 'users',
 })
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column({ unique: true })
-  googleId: string;
+  google_id: string;
 
   @Column({ unique: true })
   email: string;
@@ -25,14 +26,14 @@ export class User {
   name: string;
 
   @Column({ nullable: true })
-  picture: string;
+  picture?: string;
 
   @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  lastLogin: Date;
+  last_login?: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  create_at?: Date;
 
-  @Column({ default: false })
-  admin: boolean;
+  @Column({ enum: Role, default: Role.User })
+  role?: number;
 }
