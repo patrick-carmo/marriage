@@ -49,6 +49,28 @@ export class DriveController {
     return this.driveService.videoUpload(user, uuid, video);
   }
 
+  @Roles(Role.Admin, Role.User)
+  @Post('upload/photo')
+  @UseInterceptors(FileInterceptor('photo'))
+  async uploadPhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: 'image/*' })],
+        exceptionFactory: () =>
+          new BadRequestException(
+            'Arquivo inválido. Por favor, envie uma imagem.',
+          ),
+      }),
+    )
+    photo: Express.Multer.File,
+    @Body()
+    { uuid }: DriveUploadDto,
+    @Req() req: Request,
+  ) {
+    const user = req.user as User;
+    return this.driveService.photoUpload(user, uuid, photo);
+  }
+
   @Roles(Role.Admin)
   @Delete('delete/:fileId')
   async deleteFile(@Param('fileId') fileId: string) {

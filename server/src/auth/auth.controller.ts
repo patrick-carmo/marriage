@@ -25,8 +25,8 @@ export class AuthController {
   async googleAuthRedirect(@Res() res: Response) {
     return res.redirect(
       process.env.ENV === 'development'
-        ? `${process.env.CLIENT}/marriage/recorder`
-        : `/marriage/recorder`,
+        ? process.env.CLIENT + process.env.VIDEO_PAGE
+        : process.env.VIDEO_PAGE,
     );
   }
 

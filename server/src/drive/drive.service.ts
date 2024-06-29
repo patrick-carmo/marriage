@@ -5,9 +5,9 @@ import { DriveGateway } from './drive.gateway';
 import { User } from 'src/user/user.entity';
 import { VideoService } from 'src/video/video.service';
 import { FolderService } from 'src/folder/folder.service';
-import { UserService } from 'src/user/user.service';
 import { FolderType } from 'src/folder/enum/folderType';
 import { Folder } from 'src/folder/folder.entity';
+import { PhotoService } from 'src/photo/photo.service';
 
 @Injectable()
 export class DriveService implements OnModuleInit {
@@ -17,7 +17,7 @@ export class DriveService implements OnModuleInit {
     private readonly driveGateway: DriveGateway,
     private readonly folderService: FolderService,
     private readonly videoService: VideoService,
-    private readonly userService: UserService,
+    private readonly photoService: PhotoService,
   ) {}
 
   async onModuleInit() {
@@ -33,18 +33,34 @@ export class DriveService implements OnModuleInit {
   }
 
   async videoUpload(user: User, uuid: string, video: Express.Multer.File) {
-    const dbUser = await this.userService.findByGoogle(user);
-
     const { uploadData, folder } = await this.uploadOperation(
-      dbUser,
+      user,
       uuid,
       video,
       FolderType.Video,
     );
 
     await this.videoService.create({
-      user: dbUser,
+      user,
       video_id: uploadData.videoId,
+      folder,
+      url: uploadData.url,
+    });
+
+    return uploadData;
+  }
+
+  async photoUpload(user: User, uuid: string, photo: Express.Multer.File) {
+    const { uploadData, folder } = await this.uploadOperation(
+      user,
+      uuid,
+      photo,
+      FolderType.Photo,
+    );
+
+    await this.photoService.create({
+      user,
+      photo_id: uploadData.photoId,
       folder,
       url: uploadData.url,
     });

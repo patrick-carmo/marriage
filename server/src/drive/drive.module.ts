@@ -4,9 +4,9 @@ import { DriveController } from './drive.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import * as os from 'os';
 import { DriveGateway } from './drive.gateway';
-import { VideoModule } from 'src/video/video.module';
 import { FolderModule } from 'src/folder/folder.module';
-import { UserModule } from 'src/user/user.module';
+import { VideoModule } from 'src/video/video.module';
+import { PhotoModule } from 'src/photo/photo.module';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { UserModule } from 'src/user/user.module';
     }),
     FolderModule,
     VideoModule,
-    UserModule,
+    PhotoModule,
   ],
   controllers: [DriveController],
   providers: [DriveService, DriveGateway],
