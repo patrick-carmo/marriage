@@ -4,7 +4,7 @@ import {
   Controller,
   Delete,
   FileTypeValidator,
-  // Param,
+  Param,
   ParseFilePipe,
   Post,
   Req,
@@ -18,12 +18,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { DriveUploadDto } from './dto/drive-upload.dto';
 import { Request } from 'express';
 import { User } from 'src/user/user.entity';
+import { RoleGuard } from 'src/guards/role.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/enums/role.enum';
 
-@UseGuards(GoogleAuthGuard)
+@UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('drive')
 export class DriveController {
   constructor(private readonly driveService: DriveService) {}
 
+  @Roles(Role.Admin, Role.User)
   @Post('upload/video')
   @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
@@ -45,11 +49,13 @@ export class DriveController {
     return this.driveService.videoUpload(user, uuid, video);
   }
 
-  // @Delete('delete/:fileId')
-  // async deleteFile(@Param('fileId') fileId: string) {
-  //   return this.driveService.deleteFile(fileId);
-  // }
+  @Roles(Role.Admin)
+  @Delete('delete/:fileId')
+  async deleteFile(@Param('fileId') fileId: string) {
+    return this.driveService.deleteFile(fileId);
+  }
 
+  @Roles(Role.Admin)
   @Delete('delete-all')
   async deleteAll() {
     return this.driveService.deleteAll();

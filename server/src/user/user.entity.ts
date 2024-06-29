@@ -35,5 +35,5 @@ export class User {
   create_at?: Date;
 
   @Column({ enum: Role, default: Role.User })
-  role?: number;
+  role?: Role;
 }

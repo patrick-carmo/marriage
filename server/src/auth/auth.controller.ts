@@ -9,12 +9,10 @@ import {
 import { Request, Response } from 'express';
 import { GoogleGuard } from '../guards/google.guard';
 import { GoogleAuthGuard } from '../guards/google-auth.guard';
-import { AuthService } from './auth.service';
-import { User } from 'src/user/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor() {}
 
   @UseGuards(GoogleGuard)
   @Get('login')
@@ -22,13 +20,9 @@ export class AuthController {
     return { message: 'Ok' };
   }
 
-  @Get('google/callback')
   @UseGuards(GoogleGuard)
-  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const user = req.user as User;
-
-    await this.authService.handleGoogleAuth(user);
-
+  @Get('google/callback')
+  async googleAuthRedirect(@Res() res: Response) {
     return res.redirect(
       process.env.ENV === 'development'
         ? `${process.env.CLIENT}/marriage/recorder`
@@ -36,8 +30,8 @@ export class AuthController {
     );
   }
 
-  @Get('logout')
   @UseGuards(GoogleAuthGuard)
+  @Get('logout')
   logout(@Req() req: Request) {
     req.logout((err) => {
       if (err) {

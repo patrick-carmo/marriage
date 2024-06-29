@@ -7,7 +7,7 @@ export class AuthService {
   constructor(private readonly userService: UserService) {}
 
   async handleGoogleAuth(user: User) {
-    const userExists = await this.userService.find(user);
+    const userExists = await this.userService.findByGoogle(user);
 
     userExists
       ? await this.userService.update(user)
