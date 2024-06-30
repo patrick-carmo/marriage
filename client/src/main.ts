@@ -11,7 +11,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { InterceptorService } from './app/services/interceptor.service';
+import { RequestInterceptor } from './app/interceptors/request.interceptor';
 
 import { register as registerSwiperElements } from 'swiper/element/bundle';
 registerSwiperElements();
@@ -22,7 +22,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
     provideHttpClient(withInterceptorsFromDi()),
     provideIonicAngular(),
     provideRouter(routes),

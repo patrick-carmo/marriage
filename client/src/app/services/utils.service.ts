@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LoadingController,
@@ -11,15 +11,14 @@ import {
   providedIn: 'root',
 })
 export class UtilsService {
+  private readonly toastCtrl = inject(ToastController);
+  private readonly loadingCtrl = inject(LoadingController);
+  private readonly router = inject(Router);
+
   protected loading: HTMLIonLoadingElement | null = null;
-  constructor(
-    private toast: ToastController,
-    private loadingCtrl: LoadingController,
-    private router: Router
-  ) {}
 
   async showToast(fields: ToastOptions) {
-    const toast = await this.toast.create({
+    const toast = await this.toastCtrl.create({
       ...fields,
       duration: fields.duration ?? 2000,
       buttons: [

@@ -12,9 +12,9 @@ export const routes: Routes = [
           import('../home/home.page').then((m) => m.HomePage),
       },
       {
-        path: 'recorder',
+        path: 'media',
         loadComponent: () =>
-          import('../recorder/recorder.page').then((m) => m.RecorderPage),
+          import('../media/media.page').then((m) => m.MediaPage),
       },
       {
         path: '',

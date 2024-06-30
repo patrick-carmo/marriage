@@ -7,7 +7,6 @@ import { Socket, io } from 'socket.io-client';
 })
 export class WebsocketService implements OnDestroy {
   private socket: Socket | null = null;
-  constructor() {}
 
   ngOnDestroy() {
     this.disconnect();

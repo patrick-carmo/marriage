@@ -1,6 +1,6 @@
 import { IsUUID } from 'class-validator';
 
-export class DriveUploadDto {
+export class DriveUploadVideoDto {
   @IsUUID(undefined, { message: 'uuid is not valid' })
   uuid: string;
 }

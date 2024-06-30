@@ -5,12 +5,16 @@ export interface User {
   picture: string;
 }
 
-export interface uploadVideoResponse {
+export interface Comment {
+  content: string;
+}
+
+export interface UploadVideoResponse {
   url: string;
   videoId: string;
 }
 
-export interface uploadPhotoResponse {
+export interface UploadPhotoResponse {
   url: string;
   photoId: string;
 }

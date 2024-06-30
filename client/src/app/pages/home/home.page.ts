@@ -1,9 +1,9 @@
 import { RouterLink } from '@angular/router';
 import {
-  AfterViewInit,
   CUSTOM_ELEMENTS_SCHEMA,
   Component,
   OnInit,
+  inject,
 } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
-import { Photos } from 'src/app/interfaces/interfaces';
+import { Photos } from 'src/app/types/interfaces';
 
 @Component({
   selector: 'app-home',
@@ -37,9 +37,9 @@ import { Photos } from 'src/app/interfaces/interfaces';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePage implements OnInit {
-  photos: Photos[] = [];
+  protected readonly authService = inject(AuthService);
 
-  constructor(readonly authService: AuthService) {}
+  photos: Photos[] = [];
 
   ngOnInit() {
     this.photos = [

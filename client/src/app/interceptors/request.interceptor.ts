@@ -9,9 +9,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class InterceptorService implements HttpInterceptor {
-  constructor() {}
-
+export class RequestInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const request = req.clone({
       withCredentials: true,

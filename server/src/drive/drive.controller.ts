@@ -15,12 +15,13 @@ import {
 import { DriveService } from './drive.service';
 import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { DriveUploadDto } from './dto/drive-upload.dto';
+import { DriveUploadVideoDto } from './dto/drive-upload-video.dto';
 import { Request } from 'express';
 import { User } from 'src/user/user.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enums/role.enum';
+import { DriveUploadPhotoDto } from './dto/drive-upload-photo.dto';
 
 @UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('drive')
@@ -42,7 +43,7 @@ export class DriveController {
     )
     video: Express.Multer.File,
     @Body()
-    { uuid }: DriveUploadDto,
+    { uuid }: DriveUploadVideoDto,
     @Req() req: Request,
   ) {
     const user = req.user as User;
@@ -64,11 +65,11 @@ export class DriveController {
     )
     photo: Express.Multer.File,
     @Body()
-    { uuid }: DriveUploadDto,
+    body: DriveUploadPhotoDto,
     @Req() req: Request,
   ) {
     const user = req.user as User;
-    return this.driveService.photoUpload(user, uuid, photo);
+    return this.driveService.photoUpload(user, body, photo);
   }
 
   @Roles(Role.Admin)

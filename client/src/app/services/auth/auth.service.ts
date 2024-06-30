@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
-import { User } from '../../interfaces/interfaces';
+import { Injectable, OnDestroy, inject } from '@angular/core';
+import { User } from '../../types/interfaces';
 import { BehaviorSubject, Subscription, catchError, of } from 'rxjs';
 import { UtilsService } from '../utils.service';
 
@@ -8,6 +8,9 @@ import { UtilsService } from '../utils.service';
   providedIn: 'root',
 })
 export class AuthService implements OnDestroy {
+  private readonly http = inject(HttpClient);
+  private readonly utilsService = inject(UtilsService);
+
   private user$ = new BehaviorSubject<User | null>(null);
   private userSub$: Subscription | null = null;
   private userData: User | null = null;
@@ -15,10 +18,7 @@ export class AuthService implements OnDestroy {
   apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
   loginURL = `${this.apiUrl}/api/auth/login`;
 
-  constructor(
-    private http: HttpClient,
-    private readonly utilsService: UtilsService
-  ) {
+  constructor() {
     this.userSub$ = this.user$.subscribe((user) => {
       this.userData = user;
     });
@@ -56,7 +56,7 @@ export class AuthService implements OnDestroy {
           message: 'Logout falhou',
         });
 
-        window.location.reload()
+        window.location.reload();
       }
     );
   }
