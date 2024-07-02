@@ -1,8 +1,8 @@
-import { IsOptional, IsString } from 'class-validator';
-import { DriveUploadVideoDto } from './drive-upload-video.dto';
+import { IntersectionType, PartialType } from '@nestjs/mapped-types';
+import { CreateCommentDTO } from 'src/comment/dto/create-comment.dto';
+import { DriveUploadVideoDTO } from './drive-upload-video.dto';
 
-export class DriveUploadPhotoDto extends DriveUploadVideoDto {
-  @IsString()
-  @IsOptional()
-  content?: string;
-}
+export class DriveUploadPhotoDTO extends IntersectionType(
+  PartialType(CreateCommentDTO),
+  DriveUploadVideoDTO,
+) {}

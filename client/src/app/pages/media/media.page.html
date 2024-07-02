@@ -31,9 +31,9 @@
         </div>
 
         <div class="flex" *ngIf="formType === 'comment' || (withMessage && formType !== 'video')">
-          <ion-textarea [(ngModel)]="comment" placeholder="Digite sua mensagem" autoGrow="true" [counter]="true" minlength="10" maxlength="250" id="content" name="content" (input)="onCommentInput($event)" errorText="Mensagem muito curta" required></ion-textarea>
+          <ion-textarea [(ngModel)]="comment" placeholder="Digite sua mensagem" autoGrow="true" [counter]="true" [minlength]="minContentLength" [maxlength]="maxContentLength" id="content" name="content" (input)="onCommentInput($event)" errorText="Mensagem muito curta" required></ion-textarea>
 
-          <ion-button class="floating" (click)="clearTextArea()" shape="round" fill="clear">
+          <ion-button class="floating" (click)="clearTextArea()" shape="round" fill="clear" *ngIf="comment?.length! < 10">
             <ion-icon icon-only name="trash"></ion-icon>
           </ion-button>
         </div>
@@ -49,7 +49,6 @@
 
       @if(showProgressBar){
       <ion-progress-bar [buffer]="buffer" [value]="progress"></ion-progress-bar>
-      <ion-spinner></ion-spinner>
       <p>{{percent}}%</p>
       }
     </div>

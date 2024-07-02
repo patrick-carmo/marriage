@@ -1,24 +1,18 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader,
   IonTitle,
   IonToolbar,
+  IonSegment,
   IonSegmentButton,
   IonLabel,
   IonIcon,
   IonButton,
   IonProgressBar,
   IonTextarea,
-  IonSpinner,
 } from '@ionic/angular/standalone';
 import { DriveService } from 'src/app/services/drive/drive.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -34,12 +28,12 @@ import { CommentService } from 'src/app/services/comment/comment.service';
   styleUrls: ['./media.page.scss'],
   standalone: true,
   imports: [
-    IonSpinner,
     IonTextarea,
     IonProgressBar,
     IonButton,
     IonIcon,
     IonLabel,
+    IonSegment,
     IonSegmentButton,
     IonContent,
     IonHeader,
@@ -60,6 +54,8 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   private file: File | null = null;
 
   protected comment: string | null = null;
+  protected minContentLength: number = 10;
+  protected maxContentLength: number = 250;
 
   protected user: User | null = null;
 
@@ -143,13 +139,16 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
   protected onCommentInput(event: any) {
     if (this.formType === 'comment')
-      return (this.showSubmit = event.target.value.length >= 10);
+      return (this.showSubmit =
+        event.target.value.length >= this.minContentLength);
 
     const fileExists = this.file ? true : false;
 
     if (this.formType === 'photo') {
       this.showSubmit =
-        fileExists && this.withMessage && event.target.value.length >= 10;
+        fileExists &&
+        this.withMessage &&
+        event.target.value.length >= this.minContentLength;
     }
     return;
   }
@@ -184,12 +183,12 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     this.isSendingForm();
 
-    const uuid: string = crypto.randomUUID();
+    const uuid: string = this.formType !== 'comment' ? crypto.randomUUID() : '';
 
     const formData = new FormData(this.form);
     formData.append('uuid', uuid);
 
-    this.setupSocket(uuid);
+    if (this.formType !== 'comment') this.setupSocket(uuid);
 
     const observable = this.getObservable(formData);
     this.subscribeToObservable(observable);
@@ -212,10 +211,15 @@ export class MediaPage implements OnDestroy, AfterViewInit {
         });
         return false;
       }
-      if (this.comment.length < 10) {
+      if (
+        this.comment.length < this.minContentLength ||
+        this.comment.length > this.maxContentLength
+      ) {
         await this.utilsService.showToast({
           color: 'warning',
-          message: 'Mensagem muito curta',
+          message: `Mensagem muito ${
+            this.comment.length < this.minContentLength ? 'curta' : 'longa'
+          }`,
         });
         return false;
       }
@@ -287,6 +291,8 @@ export class MediaPage implements OnDestroy, AfterViewInit {
     this.socketService.connect();
     this.socketService.emit('join', uuid);
 
+    this.showProgressBar = true;
+
     this.socketService.progress().subscribe((data: any) => {
       if (data !== 0 && !this.loadingDimissed) {
         this.utilsService.dimissLoading();
@@ -301,13 +307,13 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   }
 
   private isSendingForm(isSending: boolean = true) {
-    this.showProgressBar = isSending;
     this.showSubmit = isSending;
     this.isSending = isSending;
   }
 
   protected reset() {
     this.isSendingForm(false);
+    this.showProgressBar = false;
     this.loadingDimissed = false;
     this.withMessage = false;
     this.fileName = '';

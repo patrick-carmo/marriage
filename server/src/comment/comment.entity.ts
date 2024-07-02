@@ -7,28 +7,20 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Folder } from '../folder/folder.entity';
 
 @Entity({
-  name: 'videos',
+  name: 'comments',
 })
-export class Video {
+export class Comment {
   @PrimaryGeneratedColumn()
   id?: number;
 
   @Column({ unique: true })
-  video_id: string;
-
-  @Column()
-  url: string;
+  content: string;
 
   @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @ManyToOne(() => Folder, (folder) => folder.folder_id)
-  @JoinColumn({ name: 'folder_id' })
-  folder: Folder;
 
   @CreateDateColumn()
   create_at?: Date;

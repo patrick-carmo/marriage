@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   FileTypeValidator,
+  MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Post,
@@ -15,13 +16,13 @@ import {
 import { DriveService } from './drive.service';
 import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { DriveUploadVideoDto } from './dto/drive-upload-video.dto';
+import { DriveUploadVideoDTO } from './dto/drive-upload-video.dto';
 import { Request } from 'express';
 import { User } from 'src/user/user.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enums/role.enum';
-import { DriveUploadPhotoDto } from './dto/drive-upload-photo.dto';
+import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 
 @UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('drive')
@@ -34,7 +35,13 @@ export class DriveController {
   async uploadVideo(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: 'video/*' })],
+        validators: [
+          new FileTypeValidator({ fileType: 'video/*' }),
+          new MaxFileSizeValidator({
+            maxSize: 1024 * 1024 * 1024,
+            message: 'O arquivo é muito grande',
+          }),
+        ],
         exceptionFactory: () =>
           new BadRequestException(
             'Arquivo inválido. Por favor, envie um vídeo.',
@@ -43,7 +50,7 @@ export class DriveController {
     )
     video: Express.Multer.File,
     @Body()
-    { uuid }: DriveUploadVideoDto,
+    { uuid }: DriveUploadVideoDTO,
     @Req() req: Request,
   ) {
     const user = req.user as User;
@@ -56,7 +63,11 @@ export class DriveController {
   async uploadPhoto(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: 'image/*' })],
+        validators: [
+          new FileTypeValidator({
+            fileType: 'image/*',
+          }),
+        ],
         exceptionFactory: () =>
           new BadRequestException(
             'Arquivo inválido. Por favor, envie uma imagem.',
@@ -65,7 +76,7 @@ export class DriveController {
     )
     photo: Express.Multer.File,
     @Body()
-    body: DriveUploadPhotoDto,
+    body: DriveUploadPhotoDTO,
     @Req() req: Request,
   ) {
     const user = req.user as User;

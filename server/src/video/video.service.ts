@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Video } from './video.entity';
 import { Repository } from 'typeorm';
-import { CreateVideoDto } from './dto/create-video-dto';
 
 @Injectable()
 export class VideoService {
@@ -15,7 +14,7 @@ export class VideoService {
     return this.videoRepository.find();
   }
 
-  async create(video: CreateVideoDto) {
+  async create(video: Video) {
     return this.videoRepository.save(video);
   }
 
