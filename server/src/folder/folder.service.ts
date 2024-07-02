@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Folder } from './folder.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
-import { CreateFolderDto } from './dto/create-folder.dto';
 
 Injectable();
 export class FolderService {
@@ -27,7 +26,7 @@ export class FolderService {
     return this.folderRepository.find();
   }
 
-  async create(folder: CreateFolderDto) {
+  async create(folder: Folder) {
     return this.folderRepository.save(folder);
   }
 }

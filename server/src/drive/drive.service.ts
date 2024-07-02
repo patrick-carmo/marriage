@@ -8,7 +8,7 @@ import { FolderService } from 'src/folder/folder.service';
 import { FolderType } from 'src/folder/enum/folderType';
 import { Folder } from 'src/folder/folder.entity';
 import { PhotoService } from 'src/photo/photo.service';
-import { DriveUploadPhotoDto } from './dto/drive-upload-photo.dto';
+import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 
 @Injectable()
 export class DriveService implements OnModuleInit {
@@ -53,7 +53,7 @@ export class DriveService implements OnModuleInit {
 
   async photoUpload(
     user: User,
-    body: DriveUploadPhotoDto,
+    body: DriveUploadPhotoDTO,
     photo: Express.Multer.File,
   ) {
     const { uuid, content } = body;

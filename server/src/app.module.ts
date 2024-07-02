@@ -7,11 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PassportModule } from '@nestjs/passport';
 import { DriveModule } from './drive/drive.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
     AuthModule,
     DriveModule,
+    CommentModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',

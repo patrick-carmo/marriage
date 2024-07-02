@@ -1,17 +1,12 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   IonContent,
   IonHeader,
   IonTitle,
   IonToolbar,
+  IonSegment,
   IonSegmentButton,
   IonLabel,
   IonIcon,
@@ -40,6 +35,7 @@ import { CommentService } from 'src/app/services/comment/comment.service';
     IonButton,
     IonIcon,
     IonLabel,
+    IonSegment,
     IonSegmentButton,
     IonContent,
     IonHeader,
