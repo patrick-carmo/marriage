@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { drive_v3, google } from 'googleapis';
 import * as fs from 'fs';
 import { DriveGateway } from './drive.gateway';
@@ -125,7 +130,7 @@ export class DriveService implements OnModuleInit {
     });
 
     if (!file.data.id) {
-      throw new BadRequestException('Error creating folder');
+      throw new BadRequestException('Erro ao criar pasta no Drive');
     }
 
     return file.data.id;
@@ -167,10 +172,6 @@ export class DriveService implements OnModuleInit {
 
     const { id } = response.data;
 
-    if (!id) {
-      throw new BadRequestException('Error uploading file');
-    }
-
     const data = {
       [type]: id,
       url: `https://drive.google.com/file/d/${type}/preview`,
@@ -179,10 +180,41 @@ export class DriveService implements OnModuleInit {
     return data;
   }
 
-  deleteFile = async (fileId: string) => {
-    return this.service.files.delete({
+  private async getFile(fileId: string) {
+    const { data } = await this.service.files.get({
       fileId,
+      fields: 'id, name, webViewLink, mimeType, size, createdTime',
     });
+
+    return data;
+  }
+
+  deleteFile = async (fileId: string) => {
+    try {
+      const file = await this.getFile(fileId);
+
+      const fileType = file.mimeType.split('/')[0].includes('image')
+        ? 'photo'
+        : 'video';
+
+      if (fileType === 'photo') {
+        await this.photoService.delete({
+          photo_id: file.id,
+        });
+      } else {
+        await this.videoService.delete({
+          video_id: file.id,
+        });
+      }
+
+      await this.service.files.delete({
+        fileId,
+      });
+    } catch {
+      throw new NotFoundException('Arquivo não encontrado');
+    }
+
+    return { message: 'Arquivo deletado' };
   };
 
   deleteAll = async () => {
@@ -193,7 +225,7 @@ export class DriveService implements OnModuleInit {
     const files = file.data.files;
 
     if (!files || !files.length) {
-      return { message: 'No files found' };
+      throw new NotFoundException('No files found');
     }
 
     console.log(files);

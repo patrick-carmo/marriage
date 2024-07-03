@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -15,13 +17,14 @@ import { NoFilesInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/user/user.entity';
 import { Request } from 'express';
 import { CommentService } from './comment.service';
+import { ParamId } from 'src/decorators/param-id.decorator';
 
+@UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Roles(Role.Admin, Role.User)
-  @UseGuards(GoogleAuthGuard, RoleGuard)
   @UseInterceptors(NoFilesInterceptor())
   @Post('create')
   async createComment(
@@ -30,5 +33,11 @@ export class CommentController {
   ) {
     const user = req.user as User;
     return this.commentService.create({ content, user });
+  }
+
+  @Roles(Role.Admin)
+  @Delete('delete/:id')
+  async deleteComment(@ParamId() id: number) {
+    return this.commentService.delete({ id });
   }
 }

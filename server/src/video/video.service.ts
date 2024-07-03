@@ -18,7 +18,7 @@ export class VideoService {
     return this.videoRepository.save(video);
   }
 
-  async delete(video: Video) {
-    return this.videoRepository.delete({ id: video.id });
+  async delete(video: Video | { video_id: string }) {
+    return this.videoRepository.delete({ video_id: video.video_id });
   }
 }

@@ -18,7 +18,7 @@ export class PhotoService {
     return this.photoRepository.save(photo);
   }
 
-  async delete(photo: Photo) {
-    return this.photoRepository.delete({ id: photo.id });
+  async delete(photo: Photo | { photo_id: string }) {
+    return this.photoRepository.delete({ photo_id: photo.photo_id });
   }
 }
