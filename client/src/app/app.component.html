@@ -1,3 +1,65 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-header [translucent]="true" *ngIf="authService.user">
+    <ion-toolbar>
+      <ion-buttons slot="start" *ngIf="authService.user.role === 'admin'">
+        <ion-menu-button id="menu"></ion-menu-button>
+      </ion-buttons>
+
+      <div class="flex">
+        <ion-chip>
+          <ion-avatar>
+            <img alt="{{authService.user.name}}" src="{{authService.user.picture}}" />
+          </ion-avatar>
+          <ion-label>{{authService.user.name}}</ion-label>
+        </ion-chip>
+
+        <ion-button (click)="authService.logout()" size="small" shape="round" color="medium">
+          Sair
+          <ion-icon icon-only name="exit" slot="start"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-menu contentId="menu">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col>
+              <ion-title>Menu</ion-title>
+            </ion-col>
+            <ion-col>
+              <ion-menu-toggle>
+                <ion-chip>
+                  <ion-avatar>
+                    <img alt="Picture" src="{{authService.user?.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'}}" />
+                  </ion-avatar>
+                  <ion-label>{{authService.user?.name || authService.user?.email || 'perfil'}}</ion-label>
+                </ion-chip>
+              </ion-menu-toggle>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle>
+          <ion-item routerLink="/">
+            <ion-label>Home</ion-label>
+            <ion-icon name="home" slot="start"></ion-icon>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-button (click)="authService.logout()" color="medium" expand="full">
+            Sair
+            <ion-icon icon-only name="exit" slot="start"></ion-icon>
+          </ion-button>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="menu"></ion-router-outlet>
 </ion-app>

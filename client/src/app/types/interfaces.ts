@@ -1,8 +1,16 @@
+import { Role } from '../enums/role.enum';
+
 export interface User {
-  googleId: string;
   email: string;
   name?: string;
   picture: string;
+  role: Role;
+}
+
+export interface Photo {
+  src: string;
+  title: string;
+  content: string;
 }
 
 export interface Comment {
@@ -17,10 +25,4 @@ export interface UploadVideoResponse {
 export interface UploadPhotoResponse {
   url: string;
   photoId: string;
-}
-
-export interface Photos {
-  src: string;
-  title: string;
-  content: string;
 }

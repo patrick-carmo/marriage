@@ -27,3 +27,23 @@
 .container a {
   text-decoration: none;
 }
+
+ion-chip {
+  --color: var(--ion-color-primary-contrast);
+  --background: var(--ion-color-secondary);
+}
+
+ion-button {
+  --background: var(--ion-color-medium);
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+
+  ion-chip {
+    --background: var(--ion-color-primary);
+  }
+}

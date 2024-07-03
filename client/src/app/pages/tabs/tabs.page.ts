@@ -10,9 +10,9 @@ import {
   IonChip,
   IonToolbar,
   IonHeader,
+  IonButtons,
+  IonMenuButton,
 } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { camera, chatbox, home, image, trash, videocam } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -22,6 +22,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['tabs.page.scss'],
   standalone: true,
   imports: [
+    IonButtons,
+    IonMenuButton,
     IonHeader,
     IonToolbar,
     IonChip,
@@ -37,8 +39,4 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class TabsPage {
   protected authService = inject(AuthService);
-
-  constructor() {
-    addIcons({ home, videocam, image, camera, trash, chatbox });
-  }
 }

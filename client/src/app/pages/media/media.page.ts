@@ -13,6 +13,7 @@ import {
   IonButton,
   IonProgressBar,
   IonTextarea,
+  IonText,
 } from '@ionic/angular/standalone';
 import { DriveService } from 'src/app/services/drive/drive.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -38,6 +39,7 @@ import { CommentService } from 'src/app/services/comment/comment.service';
     IonContent,
     IonHeader,
     IonTitle,
+    IonText,
     IonToolbar,
     CommonModule,
     FormsModule,
@@ -51,7 +53,9 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
   protected formType: FormType = 'video';
   private form: HTMLFormElement | null = null;
-  private file: File | null = null;
+  protected file: File | null = null;
+  protected photoURL: string | null = null;
+  protected videoURL: string | null = null;
 
   protected comment: string | null = null;
   protected minContentLength: number = 10;
@@ -72,9 +76,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   protected showSubmit: Boolean = false;
 
   protected fileName: string = '';
-  protected withMessage: boolean = false;
-
-  constructor() {}
 
   ngAfterViewInit() {
     this.form = document.getElementById('form') as HTMLFormElement | null;
@@ -93,7 +94,19 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   protected async onFileChange(event: any) {
     this.file = event.target.files[0];
     await this.verifyFile(this.file);
-    this.file ? (this.fileName = this.file.name) : (this.fileName = '');
+
+    if (this.file) {
+      this.fileName = this.file.name;
+
+      this.formType === 'photo'
+        ? (this.photoURL = URL.createObjectURL(this.file))
+        : (this.videoURL = URL.createObjectURL(this.file));
+
+      return;
+    }
+    this.fileName = '';
+    this.photoURL = null;
+    this.videoURL = null;
   }
 
   private async verifyFile(file: File | null | undefined) {
@@ -129,9 +142,14 @@ export class MediaPage implements OnDestroy, AfterViewInit {
       await this.utilsService.showToast({
         color: 'warning',
         message: 'Arquivo muito grande',
+        duration: 5000,
       });
 
       return false;
+    }
+
+    if (this.formType === 'photo' && !this.comment) {
+      return (this.showSubmit = false);
     }
 
     return (this.showSubmit = true);
@@ -146,27 +164,14 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     if (this.formType === 'photo') {
       this.showSubmit =
-        fileExists &&
-        this.withMessage &&
-        event.target.value.length >= this.minContentLength;
+        fileExists && event.target.value.length >= this.minContentLength;
     }
     return;
   }
 
-  protected toggleMessage() {
-    this.withMessage = !this.withMessage;
-
-    const fileExists = this.file ? true : false;
-
-    if (this.withMessage)
-      this.showSubmit = fileExists && this.comment?.length! >= 10;
-    else this.showSubmit = fileExists;
-  }
-
   protected clearTextArea() {
     this.comment = null;
-    if (this.formType === 'comment') this.showSubmit = false;
-    if (this.formType === 'photo') this.withMessage = false;
+    this.showSubmit = false;
   }
 
   protected async sendForm(event: Event) {
@@ -201,28 +206,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
         message: 'Por favor, digite um comentário',
       });
       return false;
-    }
-
-    if (this.formType === 'photo' && this.withMessage) {
-      if (!this.comment) {
-        await this.utilsService.showToast({
-          color: 'warning',
-          message: 'Por favor, digite uma mensagem',
-        });
-        return false;
-      }
-      if (
-        this.comment.length < this.minContentLength ||
-        this.comment.length > this.maxContentLength
-      ) {
-        await this.utilsService.showToast({
-          color: 'warning',
-          message: `Mensagem muito ${
-            this.comment.length < this.minContentLength ? 'curta' : 'longa'
-          }`,
-        });
-        return false;
-      }
     }
     if (this.formType !== 'comment') {
       if (!this.file) {
@@ -272,9 +255,9 @@ export class MediaPage implements OnDestroy, AfterViewInit {
     this.reset();
   };
 
-  private errorResponse = async (error: any) => {
+  private errorResponse = async ({ error }: any) => {
     await this.utilsService.showToast({
-      message: error.error.message || 'Erro ao enviar o arquivo',
+      message: error.message || 'Erro ao enviar o arquivo',
       color: 'danger',
       duration: 4000,
     });
@@ -315,7 +298,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
     this.isSendingForm(false);
     this.showProgressBar = false;
     this.loadingDimissed = false;
-    this.withMessage = false;
     this.fileName = '';
 
     this.buffer = 0.1;
@@ -327,6 +309,8 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     this.comment = null;
     this.file = null;
+    this.photoURL = null;
+    this.videoURL = null;
     this.form?.reset();
   }
 }

@@ -13,10 +13,11 @@ import {
   IonButton,
   IonCardContent,
   IonCard,
+  IonText,
 } from '@ionic/angular/standalone';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
-import { Photos } from 'src/app/types/interfaces';
+import { Photo } from 'src/app/types/interfaces';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +33,7 @@ import { Photos } from 'src/app/types/interfaces';
     CommonModule,
     IonCard,
     RouterLink,
+    IonText,
     NgOptimizedImage,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -39,7 +41,7 @@ import { Photos } from 'src/app/types/interfaces';
 export class HomePage implements OnInit {
   protected readonly authService = inject(AuthService);
 
-  photos: Photos[] = [];
+  photos: Photo[] = [];
 
   ngOnInit() {
     this.photos = [

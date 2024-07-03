@@ -1,18 +1,3 @@
-<ion-header>
-  <ion-toolbar>
-    <div class="flex">
-      <ion-chip>
-        <ion-avatar>
-          <img alt="{{authService.user?.name}}" src="{{authService.user?.picture}}" />
-        </ion-avatar>
-        <ion-label>{{authService.user?.name}}</ion-label>
-      </ion-chip>
-
-      <ion-button (click)="authService.logout()" size="small" shape="round">Logout</ion-button>
-    </div>
-  </ion-toolbar>
-</ion-header>
-
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="home" href="/home">

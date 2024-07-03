@@ -28,27 +28,40 @@ ion-content {
   padding: 20px;
   gap: 10px;
 
-  border-radius: 50px;
+  border-radius: 20px;
+
+  label {
+    cursor: pointer;
+    align-self: center;
+  }
 
   background-color: var(--ion-color-light-tint);
   box-shadow: 0px 0px 15px var(--ion-color-primary, rgba(0, 0, 0, 1));
+
+  #image,
+  #videoPlayer {
+    display: block;
+    max-height: 400px;
+    border-radius: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 
   p {
     padding: 0;
     margin: 0;
   }
 
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-  }
-
   ion-segment {
-    border-radius: 50px;
+    border-radius: 30px;
 
     box-shadow: 0px 0px 2px var(--ion-color-primary, rgba(0, 0, 0, 0.1));
+  }
+
+  #buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
   }
 
   #form {
@@ -73,5 +86,32 @@ ion-content {
     right: -30px;
     top: 25px;
     z-index: 2;
+  }
+}
+
+@media (max-width: 650px) {
+  #media-container {
+    padding: 10px;
+    margin: 10px;
+    gap: 10px;
+
+    #image,
+    #videoPlayer {
+      max-height: 250px;
+      max-width: 300px;
+    }
+  }
+}
+
+@media (max-height: 650px) {
+  #media-container {
+    padding: 5px;
+    margin: 5px;
+    gap: 5px;
+
+    #image,
+    #videoPlayer {
+      max-height: 200px;
+    }
   }
 }

@@ -13,43 +13,43 @@
         </ion-segment-button>
       </ion-segment>
 
-      <img src="../../../assets/img/logo.png" id="logo">
+      <img [src]="photoURL || '../../../assets/img/logo.png'" id="image" *ngIf="!videoURL">
+      <video [src]="videoURL" id="videoPlayer" controls *ngIf="file && videoURL"></video>
 
 
       <form (submit)="sendForm($event)" id="form" *ngIf="!isSending">
 
-        <label *ngIf="formType !== 'comment'" [for]="formType" id="{{formType}}Text">
-          <p>{{ fileName || ('Clique aqui para enviar ' + (formType === 'video' ? 'um vídeo' : 'uma foto')) }}</p>
+        @if(formType !== 'comment'){
+        <ion-text>
+          <p>{{ fileName || ('Clique no ícone para enviar ' + (formType === 'video' ? 'um vídeo' : 'uma foto')) }}</p>
+        </ion-text>
+        <label [for]="formType" id="{{formType}}Text">
           <ion-icon [name]="formType === 'video' ? 'videocam' : 'camera'" size="large" color="primary"></ion-icon>
         </label>
+        }
 
-        <div *ngIf="formType === 'photo'">
-          <p *ngIf="!withMessage">Deseja incluir uma mensagem?</p>
-          <ion-button id="message" name="message" shape="round" size="small" (click)="toggleMessage()">
-            <ion-icon icon-only name="chatbox"></ion-icon>
-          </ion-button>
-        </div>
-
-        <div class="flex" *ngIf="formType === 'comment' || (withMessage && formType !== 'video')">
+        <div class="flex" *ngIf="formType !== 'video'">
           <ion-textarea [(ngModel)]="comment" placeholder="Digite sua mensagem" autoGrow="true" [counter]="true" [minlength]="minContentLength" [maxlength]="maxContentLength" id="content" name="content" (input)="onCommentInput($event)" errorText="Mensagem muito curta" required></ion-textarea>
 
           <ion-button class="floating" (click)="clearTextArea()" shape="round" fill="clear" *ngIf="comment?.length! < 10">
-            <ion-icon icon-only name="trash"></ion-icon>
+            <ion-icon icon-only name="trash" color="medium"></ion-icon>
           </ion-button>
         </div>
 
         <input *ngIf="formType !== 'comment'" type="file" [name]="formType" [accept]="formType === 'video' ? 'video/*' : 'image/*'" capture required [id]="formType" hidden (change)="onFileChange($event)">
 
-        <div *ngIf="showSubmit">
+        <div *ngIf="showSubmit" id="buttons">
+          <ion-button type="reset" (click)="reset()" color="medium">Cancelar</ion-button>
           <ion-button type="submit">Enviar</ion-button>
-          <ion-button type="reset" (click)="reset()">Cancelar</ion-button>
         </div>
 
       </form>
 
       @if(showProgressBar){
       <ion-progress-bar [buffer]="buffer" [value]="progress"></ion-progress-bar>
-      <p>{{percent}}%</p>
+      <ion-text>
+        <p>{{percent}}%</p>
+      </ion-text>
       }
     </div>
   </div>
