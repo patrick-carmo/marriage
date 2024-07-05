@@ -16,12 +16,11 @@
       <img [src]="photoURL || '../../../assets/img/logo.png'" id="image" *ngIf="!videoURL">
       <video [src]="videoURL" id="videoPlayer" controls *ngIf="file && videoURL"></video>
 
-
       <form (submit)="sendForm($event)" id="form" *ngIf="!isSending">
 
         @if(formType !== 'comment'){
         <ion-text>
-          <p>{{ fileName || ('Clique no ícone para enviar ' + (formType === 'video' ? 'um vídeo' : 'uma foto')) }}</p>
+          <p>{{ fileName || ('Pressione o ícone para enviar ' + (formType === 'video' ? 'um vídeo' : 'uma foto')) }}</p>
         </ion-text>
         <label [for]="formType" id="{{formType}}Text">
           <ion-icon [name]="formType === 'video' ? 'videocam' : 'camera'" size="large" color="primary"></ion-icon>

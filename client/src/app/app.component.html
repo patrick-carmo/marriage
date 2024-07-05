@@ -6,7 +6,7 @@
       </ion-buttons>
 
       <div class="flex">
-        <ion-chip>
+        <ion-chip (click)="showProfile($event)">
           <ion-avatar>
             <img alt="{{authService.user.name}}" src="{{authService.user.picture}}" />
           </ion-avatar>
@@ -21,23 +21,23 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-menu contentId="menu">
+  <ion-menu contentId="menu" *ngIf="authService.user">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-grid>
           <ion-row class="ion-align-items-center">
             <ion-col>
-              <ion-title>Menu</ion-title>
+              <ion-text>
+                <h2>Menu</h2>
+              </ion-text>
             </ion-col>
             <ion-col>
-              <ion-menu-toggle>
-                <ion-chip>
-                  <ion-avatar>
-                    <img alt="Picture" src="{{authService.user?.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'}}" />
-                  </ion-avatar>
-                  <ion-label>{{authService.user?.name || authService.user?.email || 'perfil'}}</ion-label>
-                </ion-chip>
-              </ion-menu-toggle>
+              <ion-chip (click)="showProfile($event)">
+                <ion-avatar>
+                  <img alt="Picture" src="{{authService.user.picture}}" />
+                </ion-avatar>
+                <ion-label>{{authService.user.name || authService.user.email || 'perfil'}}</ion-label>
+              </ion-chip>
             </ion-col>
           </ion-row>
         </ion-grid>
