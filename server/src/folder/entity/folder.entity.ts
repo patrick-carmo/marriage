@@ -1,4 +1,4 @@
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,7 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-import { FolderType } from './enum/folderType';
+import { FolderType } from '../../shared/enums/folderType';
 
 @Entity({
   name: 'folders',

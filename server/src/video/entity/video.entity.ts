@@ -6,8 +6,8 @@ import {
   CreateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Folder } from '../folder/folder.entity';
+import { User } from '../../user/entity/user.entity';
+import { Folder } from '../../folder/entity/folder.entity';
 
 @Entity({
   name: 'videos',

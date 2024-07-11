@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Video } from './video.entity';
+import { Video } from './entity/video.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -10,8 +10,13 @@ export class VideoService {
     private readonly videoRepository: Repository<Video>,
   ) {}
 
-  async findAll() {
-    return this.videoRepository.find();
+  async list(page: number = 1, limit: number = 10) {
+    const [video, total] = await this.videoRepository.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return { video, total, page, limit, pages: Math.ceil(total / limit) };
   }
 
   async create(video: Video) {

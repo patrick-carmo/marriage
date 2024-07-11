@@ -7,11 +7,11 @@ import {
 import { drive_v3, google } from 'googleapis';
 import * as fs from 'fs';
 import { DriveGateway } from './drive.gateway';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { VideoService } from 'src/video/video.service';
 import { FolderService } from 'src/folder/folder.service';
-import { FolderType } from 'src/folder/enum/folderType';
-import { Folder } from 'src/folder/folder.entity';
+import { FolderType } from 'src/shared/enums/folderType';
+import { Folder } from 'src/folder/entity/folder.entity';
 import { PhotoService } from 'src/photo/photo.service';
 import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 
@@ -72,7 +72,7 @@ export class DriveService implements OnModuleInit {
 
     await this.photoService.create({
       user,
-      photo_id: uploadData.imageId,
+      photo_id: uploadData.photoId,
       folder,
       content,
       url: uploadData.url,
@@ -168,13 +168,15 @@ export class DriveService implements OnModuleInit {
       },
     );
 
-    const type = mimeType.split('/')[0] + 'Id';
+    const fileType = mimeType.split('/')[0];
+
+    const type = fileType.includes('image') ? 'photoId' : fileType + 'Id';
 
     const { id } = response.data;
 
     const data = {
       [type]: id,
-      url: `https://drive.google.com/file/d/${type}/preview`,
+      url: `https://drive.google.com/file/d/${id}/preview`,
     };
 
     return data;

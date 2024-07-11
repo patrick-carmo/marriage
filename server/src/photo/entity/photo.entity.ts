@@ -6,8 +6,8 @@ import {
   CreateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Folder } from '../folder/folder.entity';
+import { User } from '../../user/entity/user.entity';
+import { Folder } from '../../folder/entity/folder.entity';
 
 @Entity({
   name: 'photos',
@@ -19,7 +19,7 @@ export class Photo {
   @Column({ unique: true })
   photo_id: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   content?: string;
 
   @Column()

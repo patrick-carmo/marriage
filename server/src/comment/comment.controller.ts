@@ -8,16 +8,16 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Roles } from 'src/decorators/role.decorator';
-import { Role } from 'src/enums/role.enum';
+import { Roles } from 'src/shared/decorators/role.decorator';
+import { Role } from 'src/shared/enums/role.enum';
 import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { RoleGuard } from 'src/guards/role.guard';
 import { CreateCommentDTO } from './dto/create-comment.dto';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { Request } from 'express';
 import { CommentService } from './comment.service';
-import { ParamId } from 'src/decorators/param-id.decorator';
+import { ParamId } from 'src/shared/decorators/param-id.decorator';
 
 @UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('comment')

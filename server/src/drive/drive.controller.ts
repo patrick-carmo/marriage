@@ -18,10 +18,10 @@ import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DriveUploadVideoDTO } from './dto/drive-upload-video.dto';
 import { Request } from 'express';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 import { RoleGuard } from 'src/guards/role.guard';
-import { Roles } from 'src/decorators/role.decorator';
-import { Role } from 'src/enums/role.enum';
+import { Roles } from 'src/shared/decorators/role.decorator';
+import { Role } from 'src/shared/enums/role.enum';
 import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 
 @UseGuards(GoogleAuthGuard, RoleGuard)

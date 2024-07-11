@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
+import { User } from '../../user/entity/user.entity';
 
 @Entity({
   name: 'comments',
@@ -15,7 +15,7 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ unique: true })
+  @Column('text', { unique: true })
   content: string;
 
   @ManyToOne(() => User, (user) => user.id)
