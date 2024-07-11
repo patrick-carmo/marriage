@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import {
   LoadingController,
   LoadingOptions,
+  PopoverController,
+  PopoverOptions,
   ToastController,
   ToastOptions,
 } from '@ionic/angular/standalone';
@@ -13,6 +15,7 @@ import {
 export class UtilsService {
   private readonly toastCtrl = inject(ToastController);
   private readonly loadingCtrl = inject(LoadingController);
+  private readonly popoverCtrl = inject(PopoverController);
   private readonly router = inject(Router);
 
   protected loading: HTMLIonLoadingElement | null = null;
@@ -29,6 +32,7 @@ export class UtilsService {
         },
       ],
       swipeGesture: fields.swipeGesture ?? 'vertical',
+      color: fields.color ?? 'warning',
     });
     return toast.present();
   }
@@ -39,6 +43,13 @@ export class UtilsService {
       duration: fields.duration ?? 60000,
     });
     return this.loading.present();
+  }
+
+  async showPopover(fields: PopoverOptions) {
+    const popover = await this.popoverCtrl.create({
+      ...fields,
+    });
+    return popover.present();
   }
 
   async dimissLoading() {

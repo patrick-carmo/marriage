@@ -1,0 +1,32 @@
+ion-chip {
+  max-width: 100%;
+
+  ion-avatar {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    align-self: start;
+  }
+
+  ion-label {
+    max-width: 95%;
+
+    p {
+      white-space: pre-line;
+    }
+  }
+}
+
+.text-padding {
+  padding: 0 25px;
+}
+
+.relative {
+  position: relative;
+
+  .absolute {
+    position: absolute;
+    right: -5px;
+    bottom: 30px;
+    z-index: 2;
+  }
+}

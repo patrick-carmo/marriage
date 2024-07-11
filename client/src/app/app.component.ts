@@ -22,8 +22,9 @@ import {
   IonMenuButton,
   IonButton,
   IonFab,
-  PopoverController,
   IonText,
+  IonAccordionGroup,
+  IonAccordion,
 } from '@ionic/angular/standalone';
 import { AuthService } from './services/auth/auth.service';
 import { RouterLink } from '@angular/router';
@@ -32,13 +33,16 @@ import { addIcons } from 'ionicons';
 import {
   camera,
   chatbox,
+  close,
   exit,
   home,
   image,
+  send,
   trash,
   videocam,
 } from 'ionicons/icons';
 import { ProfileComponent } from './components/profile/profile.component';
+import { UtilsService } from './services/utils.service';
 
 @Component({
   selector: 'app-root',
@@ -46,6 +50,8 @@ import { ProfileComponent } from './components/profile/profile.component';
   styleUrls: ['app.component.scss'],
   standalone: true,
   imports: [
+    IonAccordion,
+    IonAccordionGroup,
     IonText,
     CommonModule,
     IonFab,
@@ -74,22 +80,31 @@ import { ProfileComponent } from './components/profile/profile.component';
   ],
 })
 export class AppComponent {
-  protected authService = inject(AuthService);
-  private popoverController = inject(PopoverController);
+  protected readonly authService = inject(AuthService);
+  private readonly utilsService = inject(UtilsService);
   constructor() {
-    addIcons({ home, videocam, image, camera, trash, chatbox, exit });
+    addIcons({
+      home,
+      videocam,
+      image,
+      camera,
+      trash,
+      chatbox,
+      exit,
+      close,
+      send,
+    });
   }
 
   async showProfile(e: Event) {
-    const popover = await this.popoverController.create({
+    return this.utilsService.showPopover({
       component: ProfileComponent,
+      cssClass: 'profile-popover',
       componentProps: {
         user: this.authService.user,
       },
       event: e,
       translucent: true,
     });
-
-    return popover.present();
   }
 }

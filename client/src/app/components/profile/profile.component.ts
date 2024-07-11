@@ -23,9 +23,6 @@ import { User } from 'src/app/types/interfaces';
     IonCard,
   ],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent {
   @Input() user: User | null = null;
-  constructor() {}
-
-  ngOnInit() {}
 }

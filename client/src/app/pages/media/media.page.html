@@ -1,7 +1,7 @@
 <ion-content [fullscreen]="true">
-  <div id="container">
+  <div id="container" class="flex flex-column">
     <div id="media-container">
-      <ion-segment *ngIf="!isSending" [(ngModel)]="formType" (ionChange)="onSegmentChanged($event)" ngDefaultControl>
+      <ion-segment *ngIf="!isSending" [(ngModel)]="formType" (ionChange)="onSegmentChanged($event)">
         <ion-segment-button value="video">
           <ion-icon name="videocam"></ion-icon>
         </ion-segment-button>
@@ -16,7 +16,7 @@
       <img [src]="photoURL || '../../../assets/img/logo.png'" id="image" *ngIf="!videoURL">
       <video [src]="videoURL" id="videoPlayer" controls *ngIf="file && videoURL"></video>
 
-      <form (submit)="sendForm($event)" id="form" *ngIf="!isSending">
+      <form (submit)="sendForm($event)" id="form" class="flex" *ngIf="!isSending">
 
         @if(formType !== 'comment'){
         <ion-text>
@@ -27,19 +27,31 @@
         </label>
         }
 
-        <div class="flex" *ngIf="formType !== 'video'">
-          <ion-textarea [(ngModel)]="comment" placeholder="Digite sua mensagem" autoGrow="true" [counter]="true" [minlength]="minContentLength" [maxlength]="maxContentLength" id="content" name="content" (input)="onCommentInput($event)" errorText="Mensagem muito curta" required></ion-textarea>
+        <div class="flex flex-column comment-width" *ngIf="formType !== 'video'">
+          <ion-chip class="comment-width" (click)="openCommentModal()">
+            <ion-avatar>
+              <img alt="{{authService.user?.name}}" src="{{ authService.user?.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'}}" />
+            </ion-avatar>
+            <ion-label class="comment-width">
+              <ion-text color="secondary">
+                {{authService.user?.name}}
+              </ion-text>
+              <p>{{comment || 'Pressione aqui para digitar a mensagem'}}</p>
+            </ion-label>
+          </ion-chip>
 
-          <ion-button class="floating" (click)="clearTextArea()" shape="round" fill="clear" *ngIf="comment?.length! < 10">
-            <ion-icon icon-only name="trash" color="medium"></ion-icon>
+          <ion-textarea [(ngModel)]="comment" placeholder="Digite sua mensagem pressionando abaixo" [minlength]="minContentLength" [maxlength]="maxContentLength" id="content" name="content" required></ion-textarea>
+
+          <ion-button *ngIf="comment?.length" (click)="clearTextArea()" shape="round" fill="clear" size="small">
+            <ion-icon icon-only name="trash" color="danger"></ion-icon>
           </ion-button>
         </div>
 
         <input *ngIf="formType !== 'comment'" type="file" [name]="formType" [accept]="formType === 'video' ? 'video/*' : 'image/*'" capture required [id]="formType" hidden (change)="onFileChange($event)">
 
-        <div *ngIf="showSubmit" id="buttons">
-          <ion-button type="reset" (click)="reset()" color="medium">Cancelar</ion-button>
-          <ion-button type="submit">Enviar</ion-button>
+        <div *ngIf="showSubmit" class="flex">
+          <ion-button type="reset" (click)="reset()" color="medium" size="small" shape="round">Cancelar</ion-button>
+          <ion-button type="submit" size="small" shape="round">Enviar</ion-button>
         </div>
 
       </form>

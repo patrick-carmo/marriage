@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="cancel()">
+        <ion-icon icon-only name="close" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mensagem</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-chip>
+    <ion-avatar>
+      <img src="{{picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'}}" />
+    </ion-avatar>
+    <ion-label>
+      <p>{{comment || 'Digite sua mensagem no campo abaixo...'}}</p>
+    </ion-label>
+  </ion-chip>
+</ion-content>
+<ion-footer class="ion-padding">
+  <div class="relative">
+    <ion-textarea class="text-padding" [(ngModel)]="comment" [maxlength]="maxLength" [minlength]="minLength" shape="round" label="Digite sua mensagem" labelPlacement="floating" counter="true">
+    </ion-textarea>
+
+    <ion-button (click)="confirm()" fill="clear" shape="round" size="small" class="absolute">
+      <ion-icon slot="icon-only" name="send" size="small"></ion-icon>
+    </ion-button>
+  </div>
+</ion-footer>

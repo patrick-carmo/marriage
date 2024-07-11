@@ -8,7 +8,7 @@
       <div class="flex">
         <ion-chip (click)="showProfile($event)">
           <ion-avatar>
-            <img alt="{{authService.user.name}}" src="{{authService.user.picture}}" />
+            <img alt="{{authService.user.name}}" src="{{authService.user.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'}}" />
           </ion-avatar>
           <ion-label>{{authService.user.name}}</ion-label>
         </ion-chip>

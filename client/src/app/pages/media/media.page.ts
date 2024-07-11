@@ -14,6 +14,10 @@ import {
   IonProgressBar,
   IonTextarea,
   IonText,
+  ModalController,
+  IonChip,
+  IonAvatar,
+  IonInput,
 } from '@ionic/angular/standalone';
 import { DriveService } from 'src/app/services/drive/drive.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -22,6 +26,8 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/types/interfaces';
 import { FormType } from 'src/app/types/types';
 import { CommentService } from 'src/app/services/comment/comment.service';
+import { CommentModalComponent } from 'src/app/components/comment-modal/comment-modal.component';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-media',
@@ -29,6 +35,9 @@ import { CommentService } from 'src/app/services/comment/comment.service';
   styleUrls: ['./media.page.scss'],
   standalone: true,
   imports: [
+    IonInput,
+    IonAvatar,
+    IonChip,
     IonTextarea,
     IonProgressBar,
     IonButton,
@@ -46,10 +55,12 @@ import { CommentService } from 'src/app/services/comment/comment.service';
   ],
 })
 export class MediaPage implements OnDestroy, AfterViewInit {
+  protected readonly authService = inject(AuthService);
   private readonly driveService = inject(DriveService);
   private readonly commentService = inject(CommentService);
   private readonly utilsService = inject(UtilsService);
   private readonly socketService = inject(WebsocketService);
+  private readonly modalController = inject(ModalController);
 
   protected formType: FormType = 'video';
   private form: HTMLFormElement | null = null;
@@ -57,11 +68,9 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   protected photoURL: string | null = null;
   protected videoURL: string | null = null;
 
-  protected comment: string | null = null;
-  protected minContentLength: number = 10;
+  protected comment: string = '';
+  protected minContentLength: number = 15;
   protected maxContentLength: number = 250;
-
-  protected user: User | null = null;
 
   protected buffer: number = 0.1;
   protected progress: number = 0;
@@ -84,6 +93,30 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.progressSub?.unsubscribe();
     this.socketService.disconnect();
+  }
+
+  protected async openCommentModal() {
+    const modal = await this.modalController.create({
+      component: CommentModalComponent,
+      componentProps: {
+        comment: this.comment,
+        maxLength: this.maxContentLength,
+        minLength: this.minContentLength,
+        picture: this.authService.user?.picture,
+      },
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 1,
+      cssClass: 'comment-modal',
+    });
+
+    modal.present();
+
+    const { data: content } = await modal.onWillDismiss();
+
+    if (!content) return;
+
+    this.comment = content;
+    this.onCommentInput({ target: { value: content } });
   }
 
   protected onSegmentChanged(event: CustomEvent) {
@@ -114,7 +147,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
       this.showSubmit = false;
 
       await this.utilsService.showToast({
-        color: 'warning',
         message: `Por favor, envie ${
           this.formType === 'video' ? 'um vídeo' : 'uma foto'
         }`,
@@ -129,7 +161,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     if (!isValidType) {
       await this.utilsService.showToast({
-        color: 'warning',
         message: 'Tipo de arquivo inválido',
       });
 
@@ -140,7 +171,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     if (file.size > maxSize) {
       await this.utilsService.showToast({
-        color: 'warning',
         message: 'Arquivo muito grande',
         duration: 5000,
       });
@@ -162,15 +192,15 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
     const fileExists = this.file ? true : false;
 
-    if (this.formType === 'photo') {
+    if (this.formType === 'photo')
       this.showSubmit =
         fileExists && event.target.value.length >= this.minContentLength;
-    }
+
     return;
   }
 
   protected clearTextArea() {
-    this.comment = null;
+    this.comment = '';
     this.showSubmit = false;
   }
 
@@ -202,7 +232,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   private async validateForm() {
     if (this.formType === 'comment' && !this.comment) {
       await this.utilsService.showToast({
-        color: 'warning',
         message: 'Por favor, digite um comentário',
       });
       return false;
@@ -210,7 +239,6 @@ export class MediaPage implements OnDestroy, AfterViewInit {
     if (this.formType !== 'comment') {
       if (!this.file) {
         await this.utilsService.showToast({
-          color: 'warning',
           message: 'Por favor, envie um arquivo',
         });
         return false;
@@ -307,7 +335,7 @@ export class MediaPage implements OnDestroy, AfterViewInit {
     this.progressSub?.unsubscribe();
     this.socketService.disconnect();
 
-    this.comment = null;
+    this.comment = '';
     this.file = null;
     this.photoURL = null;
     this.videoURL = null;
