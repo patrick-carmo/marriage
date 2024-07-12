@@ -33,6 +33,7 @@ import { addIcons } from 'ionicons';
 import {
   camera,
   chatbox,
+  chevronDownCircleOutline,
   close,
   exit,
   home,
@@ -93,6 +94,8 @@ export class AppComponent {
       exit,
       close,
       send,
+      // chevron-down-circle-outline
+      chevronDownCircleOutline,
     });
   }
 

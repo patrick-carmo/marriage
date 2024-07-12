@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import { TabsMediaPage } from './tabs-media.page';
 
 export const routes: Routes = [
   {
-    path: 'marriage',
-    component: TabsPage,
+    path: '',
+    component: TabsMediaPage,
     children: [
       {
         path: 'home',
@@ -18,14 +18,9 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/marriage/home',
+        redirectTo: 'home',
         pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/marriage/home',
-    pathMatch: 'full',
   },
 ];

@@ -1,0 +1,21 @@
+<ion-header [translucent]="true" *ngIf="authService.user">
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="authService.user.role === 'admin'">
+      <ion-menu-button id="menu"></ion-menu-button>
+    </ion-buttons>
+
+    <div class="flex">
+      <ion-chip (click)="showProfile($event)">
+        <ion-avatar>
+          <img alt="{{authService.user.name}}" src="{{authService.user.picture}}" />
+        </ion-avatar>
+        <ion-label>{{authService.user.name}}</ion-label>
+      </ion-chip>
+
+      <ion-button (click)="authService.logout()" size="small" shape="round" color="medium">
+        Sair
+        <ion-icon icon-only name="exit" slot="start"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-header>

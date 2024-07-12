@@ -23,11 +23,11 @@ import { DriveService } from 'src/app/services/drive/drive.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { Observable, Subscription } from 'rxjs';
-import { User } from 'src/app/types/interfaces';
 import { FormType } from 'src/app/types/types';
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { HeaderComponent } from "../../../components/header/header.component";
 
 @Component({
   selector: 'app-media',
@@ -52,7 +52,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
     IonToolbar,
     CommonModule,
     FormsModule,
-  ],
+    HeaderComponent
+],
 })
 export class MediaPage implements OnDestroy, AfterViewInit {
   protected readonly authService = inject(AuthService);

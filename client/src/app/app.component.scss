@@ -36,14 +36,3 @@ ion-chip {
 ion-button {
   --background: var(--ion-color-medium);
 }
-
-.flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 10px;
-
-  ion-chip {
-    --background: var(--ion-color-primary);
-  }
-}

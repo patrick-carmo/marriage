@@ -17,7 +17,8 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
-import { Photo } from 'src/app/types/interfaces';
+import { PhotoCard } from 'src/app/types/interfaces';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-home',
@@ -25,6 +26,7 @@ import { Photo } from 'src/app/types/interfaces';
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
+    HeaderComponent,
     IonContent,
     IonCardHeader,
     IonCardTitle,
@@ -41,35 +43,28 @@ import { Photo } from 'src/app/types/interfaces';
 export class HomePage implements OnInit {
   protected readonly authService = inject(AuthService);
 
-  photos: Photo[] = [];
+  photos: PhotoCard[] = [];
 
   ngOnInit() {
     this.photos = [
       {
-        src: '../../../assets/img/couple/img1.jpg',
+        src: '../../../../assets/img/couple/img1.jpg',
         title: 'O Início',
         content:
           'Nos conhecemos em 2015, na faculdade. Desde então, estamos juntos e felizes.',
       },
       {
-        src: '../../../assets/img/couple/img2.jpg',
+        src: '../../../../assets/img/couple/img2.jpg',
         title: 'O Pedido',
         content:
           'Em 2019, fiz o pedido de casamento. Foi um momento muito especial.',
       },
       {
-        src: '../../../assets/img/couple/img3.jpg',
+        src: '../../../../assets/img/couple/img3.jpg',
         title: 'O Casamento',
         content: 'O casamento será em 2021. Estamos muito felizes e ansiosos.',
       },
     ];
-
-    const cardTitle = document.getElementById('title');
-
-    if (cardTitle) {
-      if (this.authService.user) cardTitle.style.paddingTop = '90px';
-      else cardTitle.style.paddingTop = '';
-    }
   }
 
   login() {

@@ -1,5 +1,11 @@
 import { Role } from '../enums/role.enum';
 
+export interface PhotoCard {
+  src: string;
+  title: string;
+  content: string;
+}
+
 export interface User {
   email: string;
   name?: string;
@@ -7,14 +13,47 @@ export interface User {
   role: Role;
 }
 
-export interface Photo {
-  src: string;
-  title: string;
+export interface Comment {
+  id: string;
   content: string;
+  created_at: string;
+  user: User;
 }
 
-export interface Comment {
+export interface Photo {
+  id: number;
+  url: string;
   content: string;
+  created_at: string;
+  photo_id: string;
+  user: User;
+}
+
+export interface Video {
+  id: string;
+  url: string;
+  created_at: string;
+  video_id: string;
+  user: User;
+}
+
+export interface Pagination {
+  page: number;
+  pages: number;
+  total: number;
+  limit: number;
+}
+
+export interface CommentResponse extends Pagination {
+  comment: Comment[];
+}
+
+export interface PhotoResponse extends Pagination {
+  photo: Photo[];
+}
+
+export interface VideoResponse extends Pagination {
+  video: Video[];
 }
 
 export interface UploadVideoResponse {
