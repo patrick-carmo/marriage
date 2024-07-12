@@ -10,8 +10,23 @@ export class CommentService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async findAll() {
-    return this.commentRepository.find();
+  async list(page: number = 1, limit: number = 10) {
+    const [comment, total] = await this.commentRepository.findAndCount({
+      order: { created_at: 'DESC' },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+          picture: true,
+        },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return { comment, total, page, limit, pages: Math.ceil(total / limit) };
   }
 
   async create(comment: Comment) {

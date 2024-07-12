@@ -15,7 +15,7 @@ export class Comment {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column('text', { unique: true })
+  @Column('text')
   content: string;
 
   @ManyToOne(() => User, (user) => user.id)
@@ -23,5 +23,5 @@ export class Comment {
   user: User;
 
   @CreateDateColumn()
-  create_at?: Date;
+  created_at?: Date;
 }

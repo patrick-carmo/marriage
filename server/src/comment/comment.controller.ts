@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -18,11 +20,20 @@ import { User } from 'src/user/entity/user.entity';
 import { Request } from 'express';
 import { CommentService } from './comment.service';
 import { ParamId } from 'src/shared/decorators/param-id.decorator';
+import { PaginationQueryDto } from 'src/shared/dto/pagination-query.dto';
 
 @UseGuards(GoogleAuthGuard, RoleGuard)
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
+
+  @Roles(Role.Admin, Role.User)
+  @Get('list')
+  async list(@Query() paginationQuery: PaginationQueryDto) {
+    const { page, limit } = paginationQuery;
+
+    return this.commentService.list(page, limit);
+  }
 
   @Roles(Role.Admin, Role.User)
   @UseInterceptors(NoFilesInterceptor())

@@ -34,5 +34,5 @@ export class Photo {
   folder: Folder;
 
   @CreateDateColumn()
-  create_at?: Date;
+  created_at?: Date;
 }

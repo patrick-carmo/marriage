@@ -9,8 +9,8 @@ export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
   @Get('list')
-  async listVideos(@Query() paginationQuery: PaginationQueryDto) {
-    const { limit, page } = paginationQuery;
+  async list(@Query() paginationQuery: PaginationQueryDto) {
+    const { page, limit } = paginationQuery;
 
     return this.videoService.list(page, limit);
   }

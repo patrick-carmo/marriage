@@ -32,7 +32,7 @@ export class User {
   last_login?: Date;
 
   @CreateDateColumn()
-  create_at?: Date;
+  created_at?: Date;
 
   @Column({ enum: Role, default: Role.User })
   role?: Role;

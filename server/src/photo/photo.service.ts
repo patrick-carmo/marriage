@@ -12,6 +12,16 @@ export class PhotoService {
 
   async list(page: number = 1, limit: number = 10) {
     const [photo, total] = await this.photoRepository.findAndCount({
+      order: { created_at: 'DESC' },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+          picture: true,
+        },
+      },
       take: limit,
       skip: (page - 1) * limit,
     });

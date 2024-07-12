@@ -31,5 +31,5 @@ export class Video {
   folder: Folder;
 
   @CreateDateColumn()
-  create_at?: Date;
+  created_at?: Date;
 }
