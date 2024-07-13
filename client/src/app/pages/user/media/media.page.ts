@@ -23,11 +23,11 @@ import { DriveService } from 'src/app/services/drive/drive.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { Observable, Subscription } from 'rxjs';
-import { FormType } from 'src/app/types/types';
+import { PostType } from 'src/app/types/types';
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { HeaderComponent } from "../../../components/header/header.component";
+import { HeaderComponent } from '../../../components/header/header.component';
 
 @Component({
   selector: 'app-media',
@@ -52,8 +52,8 @@ import { HeaderComponent } from "../../../components/header/header.component";
     IonToolbar,
     CommonModule,
     FormsModule,
-    HeaderComponent
-],
+    HeaderComponent,
+  ],
 })
 export class MediaPage implements OnDestroy, AfterViewInit {
   protected readonly authService = inject(AuthService);
@@ -63,7 +63,7 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   private readonly socketService = inject(WebsocketService);
   private readonly modalController = inject(ModalController);
 
-  protected formType: FormType = 'video';
+  protected formType: PostType = 'video';
   private form: HTMLFormElement | null = null;
   protected file: File | null = null;
   protected photoURL: string | null = null;
@@ -121,7 +121,7 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   }
 
   protected onSegmentChanged(event: CustomEvent) {
-    this.formType = event.detail.value as FormType;
+    this.formType = event.detail.value as PostType;
     this.reset();
   }
 

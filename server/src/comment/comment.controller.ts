@@ -27,7 +27,7 @@ import { PaginationQueryDto } from 'src/shared/dto/pagination-query.dto';
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Roles(Role.Admin, Role.User)
+  @Roles(Role.Admin)
   @Get('list')
   async list(@Query() paginationQuery: PaginationQueryDto) {
     const { page, limit } = paginationQuery;
@@ -35,7 +35,6 @@ export class CommentController {
     return this.commentService.list(page, limit);
   }
 
-  @Roles(Role.Admin, Role.User)
   @UseInterceptors(NoFilesInterceptor())
   @Post('create')
   async createComment(

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -20,16 +20,16 @@ import {
   IonText,
   IonThumbnail,
   IonIcon,
-  InfiniteScrollCustomEvent,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
 } from '@ionic/angular/standalone';
-import { HeaderComponent } from '../../../components/header/header.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 import { CommentService } from 'src/app/services/comment/comment.service';
-import { UtilsService } from 'src/app/services/utils.service';
-import { Comment, CommentResponse } from 'src/app/types/interfaces';
+import { PostComponent } from '../../../components/post/post.component';
+import { InfiniteScroll } from 'src/app/shared/infinite-scroll';
+import { Comment } from 'src/app/types/interfaces';
 
 @Component({
   selector: 'app-message',
@@ -62,63 +62,14 @@ import { Comment, CommentResponse } from 'src/app/types/interfaces';
     CommonModule,
     FormsModule,
     HeaderComponent,
+    PostComponent,
   ],
 })
-export class MessagePage implements OnInit {
+export class MessagePage extends InfiniteScroll<Comment> {
   private readonly commentService = inject(CommentService);
-  private readonly utilsService = inject(UtilsService);
+  protected responseKey: string = 'comment';
 
-  protected comments: Comment[] = [];
-
-  private page: number = 1;
-  private limit: number = 10;
-  private totalPages: number = 1;
-
-  protected infiniteDisabled: boolean = false;
-
-  async ngOnInit() {
-    return this.generateItems();
-  }
-
-  private async generateItems(method: 'push' | 'unshift' = 'push') {
-    this.commentService
-      .list(this.page, this.limit)
-      .subscribe((response: CommentResponse) => {
-        this.comments[method](...response.comment);
-        this.totalPages = response.pages;
-
-        this.page++;
-      });
-  }
-
-  protected async onIonInfinite(ev: any) {
-    if (this.page > this.totalPages) {
-      this.infiniteDisabled = true;
-      await this.utilsService.showToast({
-        message: 'Não há mais mensagens.',
-      });
-
-      return;
-    }
-
-    await this.generateItems();
-
-    setTimeout(() => {
-      (
-        (ev as InfiniteScrollCustomEvent).target as HTMLIonInfiniteScrollElement
-      ).complete();
-    }, 2000);
-  }
-
-  protected async handleRefresh(event: any) {
-    setTimeout(async () => {
-      this.comments = [];
-      this.page = 1;
-
-      await this.generateItems();
-
-      this.infiniteDisabled = false;
-      event.target.complete();
-    }, 1000);
+  protected fetchData() {
+    return this.commentService.list(this.page, this.limit);
   }
 }

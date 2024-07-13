@@ -18,6 +18,10 @@ import { CommentModule } from './comment/comment.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: true,
+        ca: process.env.CA_CERT,
+      },
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.ENV === 'development',
     }),

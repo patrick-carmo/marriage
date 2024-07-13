@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -20,17 +20,17 @@ import {
   IonText,
   IonThumbnail,
   IonIcon,
-  InfiniteScrollCustomEvent,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { HeaderComponent } from '../../../components/header/header.component';
-import { UtilsService } from 'src/app/services/utils.service';
 import { VideoService } from 'src/app/services/video/video.service';
-import { Video, VideoResponse } from 'src/app/types/interfaces';
+import { Video } from 'src/app/types/interfaces';
 import { SafePipe } from 'src/app/pipes/safe.pipe';
+import { InfiniteScroll } from '../../../shared/infinite-scroll';
+import { PostComponent } from 'src/app/components/post/post.component';
 
 @Component({
   selector: 'app-video',
@@ -63,64 +63,15 @@ import { SafePipe } from 'src/app/pipes/safe.pipe';
     CommonModule,
     FormsModule,
     HeaderComponent,
+    PostComponent,
     SafePipe,
   ],
 })
-export class VideoPage implements OnInit {
+export class VideoPage extends InfiniteScroll<Video> {
   private readonly videoService = inject(VideoService);
-  private readonly utilsService = inject(UtilsService);
+  protected responseKey = 'video';
 
-  protected videos: Video[] = [];
-
-  private page: number = 1;
-  private limit: number = 10;
-  private totalPages: number = 1;
-
-  protected infiniteDisabled: boolean = false;
-
-  async ngOnInit() {
-    return this.generateItems();
-  }
-
-  private async generateItems(method: 'push' | 'unshift' = 'push') {
-    this.videoService
-      .list(this.page, this.limit)
-      .subscribe((response: VideoResponse) => {
-        this.videos[method](...response.video);
-        this.totalPages = response.pages;
-
-        this.page++;
-      });
-  }
-
-  protected async onIonInfinite(ev: any) {
-    if (this.page > this.totalPages) {
-      this.infiniteDisabled = true;
-      await this.utilsService.showToast({
-        message: 'Não há mais videos.',
-      });
-
-      return;
-    }
-
-    await this.generateItems();
-
-    setTimeout(() => {
-      (
-        (ev as InfiniteScrollCustomEvent).target as HTMLIonInfiniteScrollElement
-      ).complete();
-    }, 2000);
-  }
-
-  protected async handleRefresh(event: any) {
-    setTimeout(async () => {
-      this.videos = [];
-      this.page = 1;
-
-      await this.generateItems();
-
-      this.infiniteDisabled = false;
-      event.target.complete();
-    }, 1000);
+  protected fetchData() {
+    return this.videoService.list(this.page, this.limit);
   }
 }

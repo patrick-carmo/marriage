@@ -29,7 +29,6 @@ import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 export class DriveController {
   constructor(private readonly driveService: DriveService) {}
 
-  @Roles(Role.Admin, Role.User)
   @Post('upload/video')
   @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
@@ -57,7 +56,6 @@ export class DriveController {
     return this.driveService.videoUpload(user, uuid, video);
   }
 
-  @Roles(Role.Admin, Role.User)
   @Post('upload/photo')
   @UseInterceptors(FileInterceptor('photo'))
   async uploadPhoto(

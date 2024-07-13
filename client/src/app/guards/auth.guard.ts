@@ -15,19 +15,16 @@ export class AuthGuardService implements CanActivate {
   private user: User | null | undefined = null;
 
   async canActivate() {
-    this.user = this.authService.user;
+    this.user =
+      this.authService.user ??
+      (await firstValueFrom(this.authService.getProfile()));
 
-    if (!this.user) {
-      this.user = await firstValueFrom(this.authService.getProfile());
-      if (this.user) {
-        this.authService.user = this.user;
-        return true;
-      }
-
-      await this.utilsService.navigate('home');
-      return false;
+    if (this.user) {
+      this.authService.user = this.user;
+      return true;
     }
 
-    return true;
+    await this.utilsService.navigate('home');
+    return false;
   }
 }

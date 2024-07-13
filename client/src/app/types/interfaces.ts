@@ -1,4 +1,5 @@
 import { Role } from '../enums/role.enum';
+import { PostType } from './types';
 
 export interface PhotoCard {
   src: string;
@@ -14,7 +15,7 @@ export interface User {
 }
 
 export interface Comment {
-  id: string;
+  id: number;
   content: string;
   created_at: string;
   user: User;
@@ -30,7 +31,7 @@ export interface Photo {
 }
 
 export interface Video {
-  id: string;
+  id: number;
   url: string;
   created_at: string;
   video_id: string;

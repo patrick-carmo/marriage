@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuardService } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
+import { Role } from './enums/role.enum';
 
 export const routes: Routes = [
   {
@@ -20,7 +22,8 @@ export const routes: Routes = [
   },
   {
     path: 'received',
-    canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService, RoleGuard],
+    data: { roles: Role.Admin },
     loadChildren: () =>
       import('./pages/admin/tabs-received/tabs-received.routes').then(
         (m) => m.routes

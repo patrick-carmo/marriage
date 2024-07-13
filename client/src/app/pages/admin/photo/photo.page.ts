@@ -26,11 +26,12 @@ import {
   IonRefresher,
   IonRefresherContent,
 } from '@ionic/angular/standalone';
-import { HeaderComponent } from '../../../components/header/header.component';
-import { UtilsService } from 'src/app/services/utils.service';
 import { PhotoService } from 'src/app/services/photo/photo.service';
-import { Photo, PhotoResponse } from 'src/app/types/interfaces';
+import { Photo } from 'src/app/types/interfaces';
 import { SafePipe } from 'src/app/pipes/safe.pipe';
+import { PostComponent } from 'src/app/components/post/post.component';
+import { InfiniteScroll } from 'src/app/shared/infinite-scroll';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-photo',
@@ -62,66 +63,16 @@ import { SafePipe } from 'src/app/pipes/safe.pipe';
     IonToolbar,
     CommonModule,
     FormsModule,
+    PostComponent,
     HeaderComponent,
     SafePipe,
   ],
 })
-export class PhotoPage implements OnInit {
+export class PhotoPage extends InfiniteScroll<Photo> {
   private readonly photoService = inject(PhotoService);
-  private readonly utilsService = inject(UtilsService);
+  protected responseKey: string = 'photo';
 
-  protected photos: Photo[] = [];
-
-  private page: number = 1;
-  private limit: number = 10;
-  private totalPages: number = 1;
-
-  protected infiniteDisabled: boolean = false;
-
-  async ngOnInit() {
-    return this.generateItems();
-  }
-
-  private async generateItems(method: 'push' | 'unshift' = 'push') {
-    this.photoService
-      .list(this.page, this.limit)
-      .subscribe((response: PhotoResponse) => {
-        this.photos[method](...response.photo);
-        console.log(response);
-        this.totalPages = response.pages;
-
-        this.page++;
-      });
-  }
-
-  protected async onIonInfinite(ev: any) {
-    if (this.page > this.totalPages) {
-      this.infiniteDisabled = true;
-      await this.utilsService.showToast({
-        message: 'Não há mais fotos.',
-      });
-
-      return;
-    }
-
-    await this.generateItems();
-
-    setTimeout(() => {
-      (
-        (ev as InfiniteScrollCustomEvent).target as HTMLIonInfiniteScrollElement
-      ).complete();
-    }, 2000);
-  }
-
-  protected async handleRefresh(event: any) {
-    setTimeout(async () => {
-      this.photos = [];
-      this.page = 1;
-
-      await this.generateItems();
-
-      this.infiniteDisabled = false;
-      event.target.complete();
-    }, 1000);
+  protected fetchData() {
+    return this.photoService.list(this.page, this.limit);
   }
 }
