@@ -19,7 +19,6 @@ import { CommentModule } from './comment/comment.module';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       ssl: {
-        rejectUnauthorized: true,
         ca: process.env.CA_CERT,
       },
       entities: [__dirname + '/**/*.entity{.ts,.js}'],

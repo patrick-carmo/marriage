@@ -44,7 +44,7 @@
     font-weight: 700;
   }
 
-  ion-button{
+  ion-button {
     padding: 10px;
   }
 }
@@ -84,9 +84,13 @@
 }
 
 .footer {
+  h2 {
+    font-size: 1rem;
+  }
+
   background-color: var(--ion-color-secondary);
   color: var(--ion-color-secondary-contrast);
-  padding: 20px 0px;
+  padding: 20px 10px;
   text-align: center;
 }
 

@@ -43,7 +43,15 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 export class HomePage implements OnInit {
   protected readonly authService = inject(AuthService);
 
-  photos: PhotoCard[] = [];
+  protected photos: PhotoCard[] = [];
+
+  protected paragraphs = [
+    `Que alegria tê-los aqui para celebrar conosco este dia tão especial! Para tornar este momento ainda mais inesquecível, convidamos vocês a gravar uma mensagem de carinho para os noivos.`,
+
+    `Sua mensagem é um presente único e especial que os noivos vão adorar receber. A mensagem será guardada para sempre e os noivos poderão ouvi-la quantas vezes quiserem.`,
+
+    `Esperamos que você se divirta gravando sua mensagem e obrigado por participar deste momento tão importante!`,
+  ];
 
   ngOnInit() {
     this.photos = [
@@ -51,23 +59,24 @@ export class HomePage implements OnInit {
         src: '../../../../assets/img/couple/img1.jpg',
         title: 'O Início',
         content:
-          'Nos conhecemos em 2015, na faculdade. Desde então, estamos juntos e felizes.',
+          'Foi em 2018 que nossas histórias se cruzaram e, desde então, não nos separamos mais.',
       },
       {
         src: '../../../../assets/img/couple/img2.jpg',
         title: 'O Pedido',
         content:
-          'Em 2019, fiz o pedido de casamento. Foi um momento muito especial.',
+          'Em 2022 com o coração transbordando de amor, selamos nosso compromisso com um pedido de noivado.',
       },
       {
         src: '../../../../assets/img/couple/img3.jpg',
         title: 'O Casamento',
-        content: 'O casamento será em 2021. Estamos muito felizes e ansiosos.',
+        content:
+          'E finalmente, o grande dia chegou! No dia 14 de julho diremos "sim" um ao outro e iniciaremos um novo capítulo em nossas vidas.',
       },
     ];
   }
 
-  login() {
+  protected login() {
     window.open(this.authService.loginURL, '_self');
   }
 }

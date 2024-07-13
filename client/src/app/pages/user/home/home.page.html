@@ -14,22 +14,8 @@
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <ion-text>
-            <p>
-              Que alegria tê-los aqui para celebrar conosco este dia tão especial! Para tornar este momento ainda mais inesquecível, convidamos vocês a gravar uma mensagem de carinho para os noivos.
-            </p>
-          </ion-text>
-          <ion-text>
-            <p>
-              Sua mensagem é um presente único e especial que os noivos vão adorar receber.
-              A mensagem será guardada para sempre e os noivos poderão ouvi-la quantas vezes quiserem
-            </p>
-          </ion-text>
-
-          <ion-text>
-            <p>
-              Esperamos que você se divirta gravando sua mensagem e obrigado por participar deste momento tão importante!
-            </p>
+          <ion-text *ngFor="let content of paragraphs">
+            <p>{{content}}</p>
           </ion-text>
 
           <ion-button (click)="login()" shape="round" size="small" *ngIf="!authService.user">Pressione aqui para enviar uma mensagem</ion-button>
@@ -63,9 +49,7 @@
   </main>
 
   <footer class="footer">
-    <ion-text>
-      <h2>Agradecemos a sua presença</h2>
-    </ion-text>
+    <h2>Agradecemos a presença de todos. Fiquem à vontade para enviar quantas mensagens quiserem.</h2>
   </footer>
 
 </ion-content>
