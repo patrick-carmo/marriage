@@ -2,7 +2,7 @@
 <ion-content [fullscreen]="true">
   <div id="container" class="flex flex-column">
     <div id="media-container">
-      <ion-segment *ngIf="!isSending" [(ngModel)]="formType" (ionChange)="onSegmentChanged($event)">
+      <ion-segment *ngIf="!isSending" [(ngModel)]="formType" (ionChange)="onSegmentChanged($event)" value="photo">
         <ion-segment-button value="video">
           <ion-icon name="videocam"></ion-icon>
         </ion-segment-button>

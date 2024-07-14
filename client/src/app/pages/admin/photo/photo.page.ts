@@ -20,7 +20,6 @@ import {
   IonText,
   IonThumbnail,
   IonIcon,
-  InfiniteScrollCustomEvent,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonRefresher,

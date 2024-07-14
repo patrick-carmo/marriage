@@ -1,5 +1,4 @@
 import { Role } from '../enums/role.enum';
-import { PostType } from './types';
 
 export interface PhotoCard {
   src: string;

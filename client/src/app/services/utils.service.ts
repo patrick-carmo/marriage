@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  AlertController,
+  AlertOptions,
   LoadingController,
   LoadingOptions,
   PopoverController,
@@ -16,6 +18,7 @@ export class UtilsService {
   private readonly toastCtrl = inject(ToastController);
   private readonly loadingCtrl = inject(LoadingController);
   private readonly popoverCtrl = inject(PopoverController);
+  private readonly alertCtrl = inject(AlertController);
   private readonly router = inject(Router);
 
   protected loading: HTMLIonLoadingElement | null = null;
@@ -50,6 +53,13 @@ export class UtilsService {
       ...fields,
     });
     return popover.present();
+  }
+
+  async showAlert(fields: AlertOptions) {
+    const alert = await this.alertCtrl.create({
+      ...fields,
+    });
+    return alert.present();
   }
 
   async dimissLoading() {

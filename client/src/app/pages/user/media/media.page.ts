@@ -63,7 +63,7 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   private readonly socketService = inject(WebsocketService);
   private readonly modalController = inject(ModalController);
 
-  protected formType: PostType = 'video';
+  protected formType: PostType = 'photo';
   private form: HTMLFormElement | null = null;
   protected file: File | null = null;
   protected photoURL: string | null = null;
@@ -253,7 +253,7 @@ export class MediaPage implements OnDestroy, AfterViewInit {
 
   private getObservable(formData: FormData) {
     if (this.formType === 'comment')
-      return this.commentService.createComment(formData);
+      return this.commentService.create(formData);
 
     type DriveMethodName = 'uploadVideo' | 'uploadPhoto';
 

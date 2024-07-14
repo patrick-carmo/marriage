@@ -27,11 +27,7 @@ export class DriveService {
     );
   }
 
-  sendComment(data: FormData) {
-    return this.http.post(`${this.apiUrl}/api/comment/send`, data);
-  }
-
-  deleteVideo(id: string) {
+  delete(id: string) {
     return this.http.delete(`${this.apiUrl}/api/drive/delete/${id}`);
   }
 }

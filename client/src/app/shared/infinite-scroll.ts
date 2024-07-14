@@ -23,10 +23,17 @@ export abstract class InfiniteScroll<T> implements OnInit {
 
   async generateItems(method: 'push' | 'unshift' = 'push') {
     this.fetchData().subscribe(
-      (response: any) => {
+      async (response: any) => {
         this.items[method](...response[this.responseKey]);
         this.totalPages = response.pages;
         this.page++;
+
+        if (!this.items.length) {
+          await this.utilsService.showToast({
+            message: 'Não há itens para exibir.',
+            duration: 3000,
+          });
+        }
       },
       async () => {
         await this.utilsService.showToast({
@@ -42,7 +49,10 @@ export abstract class InfiniteScroll<T> implements OnInit {
   async onIonInfinite(ev: any) {
     if (this.page > this.totalPages) {
       this.infiniteDisabled = true;
-      await this.utilsService.showToast({ message: 'Não há mais itens.' });
+      await this.utilsService.showToast({
+        message: 'Não há mais itens.',
+        duration: 3000,
+      });
       return;
     }
 

@@ -1,29 +1,37 @@
 <ion-list>
-  <ion-item *ngFor="let post of items">
-    <ion-card>
+  <ion-item-sliding *ngFor="let post of items; let index = index">
+    <ion-item>
+      <ion-card>
 
-      <ion-card-header>
-        <ion-avatar>
-          <img [src]="post.user.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-        </ion-avatar>
-        <div>
-          <ion-card-title color="secondary">{{ post.user.name }}</ion-card-title>
-          <ion-card-subtitle>{{ post.user.email }}</ion-card-subtitle>
-        </div>
-      </ion-card-header>
+        <ion-card-header>
+          <ion-avatar>
+            <img [src]="post.user.picture || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+          </ion-avatar>
+          <div>
+            <ion-card-title color="secondary">{{ post.user.name }}</ion-card-title>
+            <ion-card-subtitle>{{ post.user.email }}</ion-card-subtitle>
+          </div>
+        </ion-card-header>
 
-      <ion-card-content>
-        <iframe *ngIf="isPhoto(post) || isVideo(post)" class="iframe" [src]="post.url | safe: 'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <ion-card-content>
+          <iframe *ngIf="isPhoto(post) || isVideo(post)" class="iframe" [src]="post.url | safe: 'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-        <p *ngIf="isComment(post) || isPhoto(post)">
-          {{ post.content }}
-        </p>
-        
-        <p>
-          {{ post.created_at | date: 'dd/MM/yyyy HH:mm:ss' : 'GMT-3' }}
-        </p>
-      </ion-card-content>
+          <p *ngIf="isComment(post) || isPhoto(post)">
+            {{ post.content }}
+          </p>
 
-    </ion-card>
-  </ion-item>
+          <p>
+            {{ post.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}
+          </p>
+        </ion-card-content>
+
+      </ion-card>
+    </ion-item>
+
+    <ion-item-options>
+      <ion-item-option color="danger" (click)="deletePost(post, index)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
 </ion-list>

@@ -6,7 +6,7 @@
       </ion-refresher-content>
     </ion-refresher>
 
-    <app-post [items]="items"></app-post>
+    <app-post [items]="items" [postType]="'comment'"></app-post>
 
     <ion-infinite-scroll *ngIf="!infiniteDisabled" (ionInfinite)="onIonInfinite($event)">
       <ion-infinite-scroll-content loadingText="Carregando..." loadingSpinner="crescent"></ion-infinite-scroll-content>

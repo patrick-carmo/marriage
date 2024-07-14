@@ -16,7 +16,11 @@ export class CommentService {
     });
   }
 
-  createComment(data: FormData) {
+  create(data: FormData) {
     return this.http.post(`${this.apiUrl}/api/comment/create`, data);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.apiUrl}/api/comment/delete/${id}`);
   }
 }
