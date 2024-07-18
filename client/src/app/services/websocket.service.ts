@@ -13,7 +13,7 @@ export class WebsocketService implements OnDestroy {
   }
 
   connect() {
-    if (!this.socket) this.socket = io(import.meta.env['NG_APP_SERVER'] || '/');
+    if (!this.socket) this.socket = io(import.meta.env['NG_APP_SERVER']);
   }
 
   disconnect() {

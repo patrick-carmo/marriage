@@ -1,4 +1,4 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, ErrorHandler } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { provideIonicAngular } from '@ionic/angular/standalone';
@@ -11,9 +11,10 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { RequestInterceptor } from './app/interceptors/request.interceptor';
+import { JwtInterceptor } from './app/interceptors/jwt.interceptor';
 
 import { register as registerSwiperElements } from 'swiper/element/bundle';
+import { ErrorHandlerService } from './app/services/error-handler.service';
 registerSwiperElements();
 
 if (environment.production) {
@@ -22,7 +23,8 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: ErrorHandlerService },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     provideHttpClient(withInterceptorsFromDi()),
     provideIonicAngular(),
     provideRouter(routes),

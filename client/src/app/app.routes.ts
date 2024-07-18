@@ -12,7 +12,7 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () =>
-      import('./pages/user/home/home.page').then((m) => m.HomePage),
+      import('./pages/home/home.page').then((m) => m.HomePage),
   },
   {
     path: 'marriage',

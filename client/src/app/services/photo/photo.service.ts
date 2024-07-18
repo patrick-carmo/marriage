@@ -8,10 +8,10 @@ import { PhotoResponse } from 'src/app/types/interfaces';
 export class PhotoService {
   private readonly http = inject(HttpClient);
 
-  apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
+  apiUrl = import.meta.env['NG_APP_SERVER'];
 
   list(page: number = 1, limit: number = 10) {
-    return this.http.get<PhotoResponse>(`${this.apiUrl}/api/photo/list`, {
+    return this.http.get<PhotoResponse>(`${this.apiUrl}/photo/list`, {
       params: { page, limit },
     });
   }

@@ -285,13 +285,26 @@ export class MediaPage implements OnDestroy, AfterViewInit {
   };
 
   private errorResponse = async ({ error }: any) => {
-    await this.utilsService.showToast({
+    this.reset();
+    await this.utilsService.dimissLoading();
+
+    if (error.code === 'jwt_error') {
+      await this.utilsService.showToast({
+        message: 'Sessão expirada, faça login novamente.',
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+
+      return;
+    }
+
+    return this.utilsService.showToast({
       message: error.message || 'Erro ao enviar o arquivo',
       color: 'danger',
       duration: 4000,
     });
-    this.reset();
-    await this.utilsService.dimissLoading();
   };
 
   private completeResponse = async () => {

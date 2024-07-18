@@ -1,5 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 import {
   AlertController,
   AlertOptions,
@@ -22,6 +24,8 @@ export class UtilsService {
   private readonly router = inject(Router);
 
   protected loading: HTMLIonLoadingElement | null = null;
+
+  private readonly isNative = Capacitor.getPlatform() !== 'web';
 
   async showToast(fields: ToastOptions) {
     const toast = await this.toastCtrl.create({
@@ -70,5 +74,9 @@ export class UtilsService {
 
   async navigate(path: string) {
     return this.router.navigate([path]);
+  }
+
+  async openURL(url: string) {
+    return this.isNative ? Browser.open({ url }) : window.open(url, '_self');
   }
 }

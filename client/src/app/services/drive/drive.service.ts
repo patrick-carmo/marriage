@@ -11,23 +11,23 @@ import {
 export class DriveService {
   private readonly http = inject(HttpClient);
 
-  apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
+  apiUrl = import.meta.env['NG_APP_SERVER'];
 
   uploadVideo(data: FormData) {
     return this.http.post<UploadVideoResponse>(
-      `${this.apiUrl}/api/drive/upload/video`,
+      `${this.apiUrl}/drive/upload/video`,
       data
     );
   }
 
   uploadPhoto(data: FormData) {
     return this.http.post<UploadPhotoResponse>(
-      `${this.apiUrl}/api/drive/upload/photo`,
+      `${this.apiUrl}/drive/upload/photo`,
       data
     );
   }
 
   delete(id: string) {
-    return this.http.delete(`${this.apiUrl}/api/drive/delete/${id}`);
+    return this.http.delete(`${this.apiUrl}/drive/delete/${id}`);
   }
 }

@@ -1,0 +1,54 @@
+<app-header></app-header>
+<ion-content [fullscreen]="true">
+  <main class="flex-center container">
+    <section class="flex text-color flex-center" id="title">
+      <ion-card class="container-section">
+        <img src="../../assets/img/logo.png" alt="Logo">
+        <ion-card-header>
+          <ion-card-title color="secondary">
+            <ion-text>
+              <p>
+                Sejam bem-vindos ao Livro de Recados Virtual do Casamento de Melissa e Matheus.
+              </p>
+            </ion-text>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-text *ngFor="let content of paragraphs">
+            <p>{{content}}</p>
+          </ion-text>
+
+          <ion-button (click)="googleLogin()" shape="round" size="small" *ngIf="!authService.user">Pressione aqui para enviar uma mensagem</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </section>
+
+    <section class="container-section" id="history">
+      <ion-text color="secondary">
+        <h1 class="detail">
+          Nossa História
+        </h1>
+      </ion-text>
+
+      <swiper-container class="detail" [navigation]="true" [pagination]="{clickable: true}" [autoplay]="{delay: 6000}" [keyboard]="true" [zoom]="true" effect="cards">
+        <swiper-slide *ngFor="let photo of photos" lazy=" true" class="ion-margin" auto-height="true">
+          <ion-card>
+            <img [src]="photo.src" alt="Casal" loading="lazy">
+            <ion-card-header>
+              <ion-card-title color="secondary">{{photo.title}}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-text>
+                <p>{{photo.content}}</p>
+              </ion-text>
+            </ion-card-content>
+          </ion-card>
+        </swiper-slide>
+      </swiper-container>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <h2>Agradecemos a presença de todos. Fiquem à vontade para enviar quantas mensagens quiserem.</h2>
+  </footer>
+</ion-content>

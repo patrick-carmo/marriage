@@ -18,7 +18,6 @@ export class AuthService {
     this.oAuth = new Auth.OAuth2Client({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      redirectUri: process.env.GOOGLE_REDIRECT_URI,
     });
   }
 
@@ -81,6 +80,7 @@ export class AuthService {
         secret: process.env.JWT_SECRET,
       });
     } catch (e) {
+      e.code = 'jwt_error';
       throw new UnauthorizedException(e);
     }
   }

@@ -8,10 +8,10 @@ import { VideoResponse } from 'src/app/types/interfaces';
 export class VideoService {
   private readonly http = inject(HttpClient);
 
-  apiUrl = import.meta.env['NG_APP_SERVER'] ?? '';
+  apiUrl = import.meta.env['NG_APP_SERVER'];
 
   list(page: number = 1, limit: number = 10) {
-    return this.http.get<VideoResponse>(`${this.apiUrl}/api/video/list`, {
+    return this.http.get<VideoResponse>(`${this.apiUrl}/video/list`, {
       params: { page, limit },
     });
   }

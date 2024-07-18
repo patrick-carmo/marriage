@@ -35,14 +35,6 @@ export abstract class InfiniteScroll<T> implements OnInit {
           });
         }
       },
-      async () => {
-        await this.utilsService.showToast({
-          header: 'Erro',
-          message: 'Erro interno. Tente novamente mais tarde.',
-          color: 'danger',
-          duration: 4000,
-        });
-      }
     );
   }
 

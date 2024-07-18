@@ -94,7 +94,6 @@ export class AppComponent {
       exit,
       close,
       send,
-      // chevron-down-circle-outline
       chevronDownCircleOutline,
     });
   }
