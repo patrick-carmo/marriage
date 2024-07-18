@@ -8,23 +8,22 @@ import {
   Param,
   ParseFilePipe,
   Post,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DriveService } from './drive.service';
-import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DriveUploadVideoDTO } from './dto/drive-upload-video.dto';
-import { Request } from 'express';
-import { User } from 'src/user/entity/user.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { Role } from 'src/shared/enums/role.enum';
 import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { UserDecorator } from 'src/decorators/user.decorator';
+import { User } from 'src/user/entity/user.entity';
 
-@UseGuards(GoogleAuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('drive')
 export class DriveController {
   constructor(private readonly driveService: DriveService) {}
@@ -50,9 +49,8 @@ export class DriveController {
     video: Express.Multer.File,
     @Body()
     { uuid }: DriveUploadVideoDTO,
-    @Req() req: Request,
+    @UserDecorator() user: User,
   ) {
-    const user = req.user as User;
     return this.driveService.videoUpload(user, uuid, video);
   }
 
@@ -75,9 +73,8 @@ export class DriveController {
     photo: Express.Multer.File,
     @Body()
     body: DriveUploadPhotoDTO,
-    @Req() req: Request,
+    @UserDecorator() user: User,
   ) {
-    const user = req.user as User;
     return this.driveService.photoUpload(user, body, photo);
   }
 

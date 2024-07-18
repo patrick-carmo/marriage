@@ -6,14 +6,11 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 
-import 'dotenv/config';
-
 import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CLIENT,
-    credentials: true,
+    origin: '*',
   },
 })
 export class DriveGateway {

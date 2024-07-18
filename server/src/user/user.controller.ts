@@ -1,22 +1,22 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
-import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { UserDecorator } from 'src/decorators/user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { User } from './entity/user.entity';
 
-@UseGuards(GoogleAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
   @Get('profile')
-  async getProfile(@Req() req: Request) {
-    const { email, name, picture, role } = req.user as User;
+  async getProfile(@UserDecorator() user: User) {
+    const { email, name, picture, role } = user;
 
-    const user = {
+    const profile = {
       email,
       name,
       picture,
       role,
     };
 
-    return user;
+    return profile;
   }
 }

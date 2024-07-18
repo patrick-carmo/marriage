@@ -22,10 +22,6 @@ export class FolderService {
     });
   }
 
-  async findAll() {
-    return this.folderRepository.find();
-  }
-
   async create(folder: Folder) {
     return this.folderRepository.save(folder);
   }

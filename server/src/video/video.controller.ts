@@ -1,12 +1,12 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { GoogleAuthGuard } from 'src/guards/google-auth.guard';
 import { VideoService } from './video.service';
 import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
 import { Role } from 'src/shared/enums/role.enum';
 import { Roles } from 'src/shared/decorators/role.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
-@UseGuards(GoogleAuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('video')
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
