@@ -22,12 +22,22 @@ import { DriveUploadPhotoDTO } from './dto/drive-upload-photo.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { UserDecorator } from 'src/decorators/user.decorator';
 import { User } from 'src/user/entity/user.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { DriveDeleteDTO } from './dto/drive-delete.dto';
+import {
+  SwaggerDriveDeleteAllDecorator,
+  SwaggerUploadPhotoDecorator,
+  SwaggerUploadVideoDecorator,
+} from './decorators/drive-swagger.decorator';
 
+@ApiTags('drive')
+@ApiBearerAuth()
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('drive')
 export class DriveController {
   constructor(private readonly driveService: DriveService) {}
 
+  @SwaggerUploadVideoDecorator()
   @Post('upload/video')
   @UseInterceptors(FileInterceptor('video'))
   async uploadVideo(
@@ -54,6 +64,7 @@ export class DriveController {
     return this.driveService.videoUpload(user, uuid, video);
   }
 
+  @SwaggerUploadPhotoDecorator()
   @Post('upload/photo')
   @UseInterceptors(FileInterceptor('photo'))
   async uploadPhoto(
@@ -80,10 +91,11 @@ export class DriveController {
 
   @Roles(Role.Admin)
   @Delete('delete/:fileId')
-  async deleteFile(@Param('fileId') fileId: string) {
+  async deleteFile(@Param() { fileId }: DriveDeleteDTO) {
     return this.driveService.deleteFile(fileId);
   }
 
+  @SwaggerDriveDeleteAllDecorator()
   @Roles(Role.Admin)
   @Delete('delete-all')
   async deleteAll() {
